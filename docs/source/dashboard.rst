@@ -17,6 +17,8 @@ The main view provides a comprehensive real-time overview:
 - **Top Attackers List** — Top attacking IPs with country flags (via GeoIP enrichment).
 - **Top Credentials** — Top 10 attempted usernames across SSH/FTP/Telnet with hit counts.
 
+**Critical Events Section**: When security-critical events are detected (CVE exploits, successful logins on Telnet/SSH/FTP, Modbus write attempts), a highlighted alert section appears at the top of the dashboard with red-themed cards showing event counts.
+
 Agents Page
 -----------
 

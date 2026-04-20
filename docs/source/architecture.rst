@@ -84,7 +84,7 @@ Melissae includes an embedded PKI (no external tools required):
 
 - **CA**: ECDSA P-384, 10-year validity, auto-generated on ``install``
 - **Agent certificates**: Dual-purpose (client + server), 1-year validity, generated during enrollment
-- **Manager certificate**: Server-only, generated on ``install``
+- **Manager certificate**: Dual-purpose (client + server), 1-year validity, generated on ``install``
 - **Enrollment**: One-time tokens (64 hex chars, 10-minute TTL). The manager generates the token + cert, the agent fetches them via ``POST /api/enroll``
 - **Revocation**: CRL-based, the manager can revoke agent certs and regenerate the CRL
 

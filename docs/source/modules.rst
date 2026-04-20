@@ -66,9 +66,9 @@ Summary
      - Flask API
    * - System
      - melissae_dashboard
-     - 0.0.0.0:443
+     - 0.0.0.0:443, 0.0.0.0:8443
      - HTTPS + basic auth
-     - Dashboard
+     - Dashboard (:443) + mTLS ingestion (:8443)
    * - System
      - melissae_agent (daemon)
      - 8444
@@ -317,7 +317,7 @@ Telnet
 **Usage:**
 
 - Modify credentials in ``modules/telnet/Dockerfile`` (default: ``admin:telnet``).
-- Logs are stored in ``modules/telnet/logs/auth.log``.
+- Logs are written to ``agent/logs/telnet/auth.log`` (mounted from the container).
 
 CVE Modules
 -----------
