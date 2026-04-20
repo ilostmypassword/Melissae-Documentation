@@ -8,4 +8,4 @@ Build locally::
     cd docs/
     make html
 
-Read the docs: https://melissae.readthedocs.io/
+Read the docs: https://melissae-documentation.readthedocs.io/
