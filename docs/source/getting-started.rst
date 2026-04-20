@@ -1,6 +1,29 @@
 Getting Started
 ===============
 
+Prerequisites
+-------------
+
+Both the manager and agent servers must run a **Debian-based** Linux distribution (Debian, Ubuntu).
+
+The manager installation will automatically install:
+
+- ``ca-certificates``, ``curl``, ``cron``
+- ``openssl`` (PKI generation)
+- ``apache2-utils`` (``htpasswd`` for dashboard basic-auth)
+- ``python3-pymongo`` (interaction with MongoDB from cron scripts)
+- Docker CE + Docker Compose plugin (if not already present)
+
+The agent installation will automatically install:
+
+- ``ca-certificates``, ``curl``, ``jq``, ``openssl``, ``python3``
+- `uv <https://docs.astral.sh/uv/>`_ (modern Python package manager)
+- Docker CE + Docker Compose plugin (if not already present)
+
+.. note::
+
+   Both machines need **root access** (``sudo``) — the install scripts configure system services (Docker, SSH, cron).
+
 Manager Installation
 --------------------
 
@@ -12,96 +35,258 @@ Clone the repository on the **manager server**:
    cd Melissae/manager/
    chmod +x melissae-manager.sh
 
-Enter the interactive console and run ``install``:
-
-.. danger::
-
-   Your SSH port will be modified and given to you at the end of the installation script. Note it carefully.
+Launch the interactive console and run ``install``:
 
 .. code-block:: bash
 
    ./melissae-manager.sh
    manager [0 active] > install
 
-The installer will:
+.. danger::
 
-1. Install prerequisites (Docker, OpenSSL, python3-pymongo, apache2-utils)
-2. Initialize the PKI (CA + manager certificate)
-3. Prompt for dashboard basic-auth credentials
-4. Configure cron jobs (threatIntel, purgeLogs, healthPoller)
-5. Randomize the SSH admin port
+   The installer will randomize your SSH port to a value between 20000 and 30000. **Note this port carefully** — it will be displayed at the end of the installation. You will need it to reconnect via SSH.
 
-Add your user to the Docker group, then reconnect:
+The installer performs the following steps:
+
+1. **System packages** — Installs prerequisites via ``apt-get`` (Docker, OpenSSL, python3-pymongo, apache2-utils, cron).
+
+2. **PKI initialization** — Generates the Certificate Authority:
+
+   - CA key: ECDSA P-384, stored in ``pki/ca/ca.key`` (mode 600)
+   - CA certificate: 10-year validity, subject ``CN=Melissae CA/O=Melissae Honeypot Framework``
+   - An OpenSSL config (``pki/ca/openssl.cnf``), serial file, and index for future cert issuance
+
+3. **Manager certificate** — The installer detects the machine's IP and hostname, then asks:
+
+   .. code-block:: text
+
+      Manager certificate configuration
+        Detected IP:       192.168.1.10
+        Detected hostname: manager.local
+
+      Public FQDN (e.g. manager.example.com) [manager.local]:
+
+   A dual-purpose (client + server) certificate is generated with SANs covering the FQDN, hostname, IP, ``localhost``, and ``127.0.0.1``.
+
+4. **Dashboard credentials** — Prompts for a username (default: ``melissae``) and password, saved to ``dashboard/conf/htpasswd`` using bcrypt (``htpasswd -Bbc``).
+
+5. **Cron jobs** — Three scheduled tasks are added to the system crontab:
+
+   .. list-table::
+      :header-rows: 1
+      :widths: 20 35 45
+
+      * - Schedule
+        - Script
+        - Purpose
+      * - Every minute
+        - ``scripts/threatIntel.py``
+        - Recalculates threat scores and verdicts
+      * - Every 3 hours
+        - ``scripts/purgeLogs.py``
+        - Removes stale benign IoCs and associated logs
+      * - Every minute
+        - ``health_poller.py``
+        - Polls agent health endpoints via mTLS
+
+6. **SSH hardening** — A random port (20000–30000) replaces port 22 in ``/etc/ssh/sshd_config``. You are asked whether to restart SSH immediately.
+
+After installation, add your user to the Docker group and **re-login**:
 
 .. code-block:: bash
 
    sudo usermod -aG docker $USER
+   # Log out and log back in (or reboot)
 
-Start the manager services:
+Then start the manager stack (MongoDB + Flask API + Nginx/Dashboard):
 
 .. code-block:: text
 
    manager [0 active] > start
 
+This brings up 3 containers:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 20 50
+
+   * - Container
+     - Port
+     - Role
+   * - ``melissae_mongo``
+     - 127.0.0.1:27017
+     - MongoDB data store (local only)
+   * - ``melissae_api``
+     - 127.0.0.1:5000
+     - Flask REST API (local only)
+   * - ``melissae_dashboard``
+     - 0.0.0.0:443, 0.0.0.0:8443
+     - Nginx — serves dashboard (:443) and terminates mTLS ingestion (:8443)
+
+
 Agent Enrollment
 ----------------
 
-On the **manager**, generate an enrollment token for the new agent:
+Enrollment is a two-step process: generate a token on the manager, then use it on the agent.
+
+Step 1: Generate the token (manager)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: text
 
    manager [3 active] > enroll my-agent 192.168.1.50
 
-This generates a one-time token (valid 10 minutes) and prints the command to run on the agent.
+This command:
 
-On the **agent server**, clone the repo and run the enrollment:
+- Validates the agent name (alphanumeric, hyphens, underscores only)
+- Generates a dual-purpose certificate for the agent (SANs: agent host, localhost, 127.0.0.1)
+- Creates a one-time enrollment token (64 hex chars, stored in MongoDB, **10-minute TTL**)
+- Registers the agent in MongoDB with ``pending`` status
+
+The output gives you the exact command to run on the agent:
+
+.. code-block:: text
+
+   [✓] Enrollment token generated (expires in 10 minutes)
+
+      Run this on the agent:
+
+      ./melissae-agent.sh install https://<manager-ip>:8443 a1b2c3d4...
+
+Step 2: Install on the agent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On the **agent server**, clone the repository:
 
 .. code-block:: bash
 
    git clone https://github.com/ilostmypassword/Melissae.git
    cd Melissae/agent/
    chmod +x melissae-agent.sh
+
+Launch the interactive console and run the install command with the manager URL and token:
+
+.. code-block:: bash
+
    ./melissae-agent.sh
-   agent:? [0 active] > install https://192.168.1.10:8443 <token>
+   agent:? [0 active] > install https://192.168.1.10:8443 a1b2c3d4...
 
-The agent will:
+The agent installer performs the following steps:
 
-1. Install system dependencies and `uv <https://docs.astral.sh/uv/>`_ (Python package manager)
-2. Create a Python virtual environment with required packages
-3. Install Docker (if not present)
-4. Fetch certificates from the manager via the enrollment token
-5. Generate the agent configuration
-6. Test the mTLS connection
-7. Randomize the SSH admin port
+1. **System packages** — Installs ``ca-certificates``, ``curl``, ``jq``, ``openssl``, ``python3``.
 
-Review the module configuration in ``agent/daemon/config.yml``, then start:
+2. **Python environment** — Installs `uv <https://docs.astral.sh/uv/>`_, creates a virtual environment in ``daemon/.venv``, installs dependencies (``requests``, ``pyyaml``).
+
+3. **Docker** — Installs Docker CE + Compose plugin if not already present.
+
+4. **Enrollment** — Sends ``POST /api/enroll`` with the one-time token to the manager (insecure TLS — CA not yet known). The manager responds with:
+
+   - ``agent_id`` — the name assigned during ``enroll`` on the manager
+   - ``ca.crt`` — the CA certificate (base64-encoded)
+   - ``agent.crt`` / ``agent.key`` — the agent's client+server certificate (base64-encoded)
+
+   Certificates are saved in ``agent/certs/`` with key permissions set to 600.
+
+5. **Configuration** — Generates ``daemon/config.yml`` with all paths and settings:
+
+   .. code-block:: yaml
+
+      agent_id: "my-agent"
+
+      manager:
+        url: "https://192.168.1.10:8443"
+        ca_cert: "/path/to/certs/ca.crt"
+
+      agent:
+        cert: "/path/to/certs/agent.crt"
+        key: "/path/to/certs/agent.key"
+        health_port: 8444
+
+      push:
+        interval_seconds: 10
+        batch_size: 500
+        retry_max_seconds: 300
+
+      buffer:
+        db_path: "/path/to/data/buffer.db"
+        max_size_mb: 512
+
+      modules:
+        ssh:
+          enabled: true
+          log_path: "ssh/sshd.log"
+        ftp:
+          enabled: true
+          log_path: "ftp/vsftpd.log"
+        http:
+          enabled: true
+          log_path: "http/access.log"
+        modbus:
+          enabled: true
+          log_path: "modbus/modbus.log"
+        mqtt:
+          enabled: true
+          log_path: "mqtt/mosquitto.log"
+        telnet:
+          enabled: true
+          log_path: "telnet/auth.log"
+        cve-2026-24061:
+          enabled: false
+          log_path: "cve/CVE-2026-24061/auth.log"
+
+   By default, all native modules are enabled and the CVE module is disabled.
+
+6. **mTLS test** — Validates the connection to the manager with the new certificates (expects HTTP 400 or 405, confirming the channel is open).
+
+7. **SSH hardening** — Same as the manager: random port 20000–30000, optional immediate restart.
+
+Configuring Modules
+-------------------
+
+Before starting the agent, review ``daemon/config.yml`` to enable/disable modules. You can also use the CLI:
 
 .. code-block:: text
 
-   agent:my-agent [0 active] > start
+   agent:my-agent [0 active] > list              # See available modules
+   agent:my-agent [0 active] > disable modbus     # Disable a module
+   agent:my-agent [0 active] > enable cve-2026-24061  # Enable a CVE module
+
+.. warning::
+
+   Modules that bind the same host port cannot run together. For example, ``telnet`` (port 23) and ``cve-2026-24061`` (port 23) conflict — the CLI will reject the combination.
 
 Starting Services
 -----------------
 
-**Manager** — always runs MongoDB, API, and Dashboard:
+**Manager** — starts MongoDB, Flask API, and the Nginx/Dashboard container:
 
 .. code-block:: text
 
    manager [0 active] > start
 
-**Agent** — runs honeypots + agent daemon:
+**Agent** — starts the enabled honeypot containers and the agent daemon (log parser + push):
 
 .. code-block:: text
 
    agent:my-agent [0 active] > start
 
+The agent daemon runs as a background process on the host (not in Docker). It:
+
+- Parses raw logs from honeypot containers (incremental, hash-based deduplication)
+- Buffers parsed entries in a local SQLite database (up to 512 MB)
+- Pushes batches (up to 500 entries) to ``POST /api/ingest`` every 10 seconds via mTLS
+- Exposes a health endpoint on port 8444 for the manager to poll
+- Falls back to exponential backoff (up to 5 minutes) if the manager is unreachable
+
 Accessing the Dashboard
 -----------------------
 
-The dashboard is served over HTTPS on port 443 using the manager's TLS certificate.
+The dashboard is served over HTTPS on port 443 using the manager's self-signed TLS certificate:
 
 .. code-block:: text
 
    https://<manager-ip>/
 
-Use the basic-auth credentials set during ``install``. Since the certificate is self-signed (internal PKI), your browser will show a security warning — this is expected.
+Authenticate with the credentials set during ``install``. Your browser will show a security warning because the certificate is signed by Melissae's internal CA — this is expected.
+
+The dashboard is also accessible on port 8443, but that port is reserved for mTLS-authenticated agent traffic (ingestion and enrollment). Do not use it for browser access.
