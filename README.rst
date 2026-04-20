@@ -1,9 +1,11 @@
-Template for the Read the Docs tutorial
-=======================================
+Melissae Documentation
+======================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
+Sphinx documentation for the Melissae Honeypot Framework.
 
-Read the tutorial here:
+Build locally::
 
-https://docs.readthedocs.io/en/stable/tutorial/
+    cd docs/
+    make html
+
+Read the docs: https://melissae.readthedocs.io/

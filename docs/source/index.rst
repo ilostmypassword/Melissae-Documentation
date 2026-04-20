@@ -1,13 +1,9 @@
-Welcome to Lumache's documentation!
-===================================
+Welcome to Melissae's documentation!
+=====================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+**Melissae** is a distributed, modular honeypot framework built to emulate real-world network services. It uses a manager/agent architecture secured by mTLS to deploy honeypot sensors across multiple machines while centralizing analysis, threat scoring, and visualization on a single manager.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+Check out the :doc:`getting-started` section to begin deploying your honeypot fleet.
 
 .. note::
 
@@ -18,5 +14,13 @@ Contents
 
 .. toctree::
 
-   usage
-   api
+   overview
+   architecture
+   structure
+   modules
+   dashboard
+   scoring
+   getting-started
+   cli-reference
+   security
+   contributing
