@@ -5,10 +5,6 @@ Welcome to Melissae's documentation!
 
 Check out the :doc:`getting-started` section to begin deploying your honeypot fleet.
 
-.. note::
-
-   This project is under active development.
-
 Contents
 --------
 
