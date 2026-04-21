@@ -26,7 +26,19 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 
-html_theme = 'furo'
+html_theme = 'sphinx_book_theme'
+
+html_logo = 'logo.png'
+html_favicon = 'logo.png'
+
+html_theme_options = {
+    "default_mode": "dark",
+    "logo": {
+        "text": "Melissae",
+        "image_light": "logo.png",
+        "image_dark": "logo.png",
+    },
+}
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
