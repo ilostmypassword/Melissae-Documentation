@@ -112,10 +112,14 @@ The following signals accumulate additively. The total is capped at 100.
      - ≥3 distinct protocols observed
      - 15
      - fixed
-   * - Multiple services compromised
-     - SSH+FTP or Telnet+SSH/FTP successful logins
+   * - Multiple services compromised (SSH + FTP)
+     - SSH and FTP both successfully logged in
      - 20
      - fixed
+   * - Multiple services compromised (Telnet + SSH/FTP)
+     - Telnet and SSH or FTP both successfully logged in
+     - 20
+     - fixed (cumulates with the row above if all three are compromised)
    * - ICS tampering with credentials
      - Modbus write + SSH or FTP successful login
      - 25

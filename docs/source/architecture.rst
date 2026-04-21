@@ -110,19 +110,19 @@ Enrollment Sequence
     Admin            Manager CLI        Manager API         Agent CLI
       │                   │                   │                   │
       │── enroll name ───>│                   │                   │
-      │                   │── gen cert ───────────────────────>   │
+      │                   │── gen cert ──────>│ (stored locally)  │
       │                   │── store token ───>│                   │
       │<── print token ───│                   │                   │
       │                   │                   │                   │
       │        (copy token, run on agent server)                  │
       │                   │                   │                   │
       │──────────────────────── install <url> <token> ──────────>│
-      │                   │                   │<── POST /enroll ──│
+      │                   │                   │<── POST /api/enroll
       │                   │                   │    (one-time token)│
       │                   │                   │── verify & consume │
       │                   │                   │── return certs ──>│
       │                   │                   │                   │── write config.yml
-      │                   │                   │<── GET /health ───│ (mTLS validation)
+      │                   │                   │<── POST /api/ingest│ (mTLS connectivity test)
       │                   │                   │── 400/405 OK ────>│
       │                   │                   │                   │── agent registered
 

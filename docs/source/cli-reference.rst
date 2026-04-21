@@ -50,7 +50,7 @@ Manager CLI
      - List registered agents with health status
    * -
      - ``agent-exec <name> <action> [mod]``
-     - Remote: start/stop/restart/status on agent via mTLS
+     - Remote: start/stop/restart/status on agent via mTLS. ``<action>`` is one of ``start``, ``stop``, ``restart``, ``status``. ``[mod]`` accepts ``ssh``, ``ftp``, ``proxy`` (web), ``modbus``, ``mqtt``, ``telnet``, or ``all`` (default).
    * -
      - ``revoke <name>``
      - Revoke agent certificate and unregister

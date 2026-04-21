@@ -181,11 +181,7 @@ The agent installer performs the following steps:
 
 4. **Enrollment** — Sends ``POST /api/enroll`` with the one-time token to the manager (insecure TLS — CA not yet known). The manager responds with:
 
-   - ``agent_id`` — the name assigned during ``enroll`` on the manager
-   - ``ca.crt`` — the CA certificate (base64-encoded)
-   - ``agent.crt`` / ``agent.key`` — the agent's client+server certificate (base64-encoded)
-
-   Certificates are saved in ``agent/certs/`` with key permissions set to 600.
+   The JSON response contains the fields ``agent_id``, ``ca_crt``, ``agent_crt``, and ``agent_key`` (all base64-encoded where applicable). Certificates are saved in ``agent/certs/`` with key permissions set to 600.
 
 5. **Configuration** — Generates ``daemon/config.yml`` with all paths and settings:
 
@@ -236,9 +232,13 @@ The agent installer performs the following steps:
 
    By default, all native modules are enabled and the CVE module is disabled.
 
-6. **mTLS test** — Validates the connection to the manager with the new certificates (expects HTTP 400 or 405, confirming the channel is open).
+6. **mTLS test** — Sends a test ``POST /api/ingest`` to the manager with the new certificates. An HTTP 400 or 405 response confirms the mTLS channel is functional.
 
-7. **SSH hardening** — Same as the manager: random port 20000–30000, optional immediate restart.
+7. **SSH hardening** — A random port (20000–30000) replaces port 22 in ``/etc/ssh/sshd_config``, identical to the manager step.
+
+.. danger::
+
+   The agent installer will also randomize your SSH port. **Note the new port carefully** — it will be displayed at the end of the installation. You will need it to reconnect via SSH to the agent server.
 
 Configuring Modules
 -------------------
