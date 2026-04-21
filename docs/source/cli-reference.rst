@@ -3,6 +3,10 @@ CLI Reference
 
 Both CLIs use an interactive console. Enter the directory and run the script.
 
+.. tip::
+
+   Run ``status`` first to verify which containers are up before issuing ``start`` or ``stop`` commands.
+
 Manager CLI
 -----------
 
@@ -11,6 +15,10 @@ Manager CLI
    cd manager/
    ./melissae-manager.sh
    manager [3 active] >
+
+.. note::
+
+   The number in brackets (e.g. ``[3 active]``) shows how many manager containers are currently running.
 
 .. list-table::
    :header-rows: 1
@@ -85,6 +93,10 @@ Agent CLI
    cd agent/
    ./melissae-agent.sh
    agent:my-agent [6 active] >
+
+.. note::
+
+   The agent name (e.g. ``my-agent``) is set during enrollment and matches the CN of the agent's TLS certificate. The number in brackets shows running honeypot containers. Before enrollment it displays as ``agent:?``.
 
 .. list-table::
    :header-rows: 1

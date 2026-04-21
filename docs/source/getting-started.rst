@@ -98,14 +98,6 @@ After installation, add your user to the Docker group and **re-login**:
    sudo usermod -aG docker $USER
    # Log out and log back in (or reboot)
 
-Once the manager is running and at least one agent is enrolled, the dashboard is accessible at ``https://<manager-ip>``:
-
-.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
-   :alt: Dashboard after first deployment
-   :align: center
-
-|
-
 Then start the manager stack (MongoDB + Flask API + Nginx/Dashboard):
 
 .. code-block:: text
@@ -263,6 +255,10 @@ Before starting the agent, review ``daemon/config.yml`` to enable/disable module
 
    Modules that bind the same host port cannot run together. For example, ``telnet`` (port 23) and ``cve-2026-24061`` (port 23) conflict — the CLI will reject the combination.
 
+.. warning::
+
+   The CVE module (``cve-2026-24061``) reproduces a real vulnerability. Deploy it only on machines that are **fully isolated** from your production infrastructure. It runs with ``pids_limit: 64``, ``mem_limit: 128m``, and a dedicated Docker network (``172.30.0.0/24``).
+
 Starting Services
 -----------------
 
@@ -295,6 +291,22 @@ The dashboard is served over HTTPS on port 443 using the manager's self-signed T
 
    https://<manager-ip>/
 
-Authenticate with the credentials set during ``install``. Your browser will show a security warning because the certificate is signed by Melissae's internal CA — this is expected.
+Authenticate with the credentials set during ``install``. Your browser will show a security warning because the certificate is signed by Melissae's internal CA — this is expected. You can import ``pki/ca/ca.crt`` into your browser's trust store to suppress the warning.
 
-The dashboard is also accessible on port 8443, but that port is reserved for mTLS-authenticated agent traffic (ingestion and enrollment). Do not use it for browser access.
+.. note::
+
+   Port **8443** is reserved for mTLS-authenticated agent traffic (ingestion and enrollment). Do not use it for browser access.
+
+.. tip::
+
+   After starting the agent, verify that it registered successfully on the manager:
+
+   .. code-block:: text
+
+      manager [3 active] > agents
+
+   The agent should appear with status ``healthy`` within a minute of its first log push.
+
+.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
+   :alt: Dashboard after first deployment
+   :align: center

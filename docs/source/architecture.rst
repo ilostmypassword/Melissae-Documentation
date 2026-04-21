@@ -102,6 +102,57 @@ Workflow
 7. ``health_poller.py`` polls agents via mTLS and updates their status in MongoDB.
 8. The manager CLI can send remote management commands (``POST /command``) to agents via mTLS (start, stop, restart, status).
 
+Enrollment Sequence
+-------------------
+
+.. code-block:: text
+
+    Admin            Manager CLI        Manager API         Agent CLI
+      │                   │                   │                   │
+      │── enroll name ───>│                   │                   │
+      │                   │── gen cert ───────────────────────>   │
+      │                   │── store token ───>│                   │
+      │<── print token ───│                   │                   │
+      │                   │                   │                   │
+      │        (copy token, run on agent server)                  │
+      │                   │                   │                   │
+      │──────────────────────── install <url> <token> ──────────>│
+      │                   │                   │<── POST /enroll ──│
+      │                   │                   │    (one-time token)│
+      │                   │                   │── verify & consume │
+      │                   │                   │── return certs ──>│
+      │                   │                   │                   │── write config.yml
+      │                   │                   │<── GET /health ───│ (mTLS validation)
+      │                   │                   │── 400/405 OK ────>│
+      │                   │                   │                   │── agent registered
+
+Log Push Sequence
+-----------------
+
+.. code-block:: text
+
+    Honeypot     log_parser    SQLite Buffer   agent_daemon   Manager API   MongoDB
+       │               │               │               │               │          │
+       │── raw log ───>│               │               │               │          │
+       │               │── normalize ─>│               │               │          │
+       │               │── insert ────>│               │               │          │
+       │               │               │<── fetch(500)─│               │          │
+       │               │               │── batch ─────>│               │          │
+       │               │               │               │── POST /ingest>│          │
+       │               │               │               │               │─ upsert >│
+       │               │               │               │               │<─ {ok} ──│
+       │               │               │<── delete ────│               │          │
+       │               │               │               │               │          │
+       │               │               │        (retry with exp. backoff if unreachable)
+
+.. note::
+
+   **Firewall requirements:**
+
+   - Manager: open **TCP 443** (dashboard HTTPS) and **TCP 8443** (mTLS ingestion + enrollment) to the agents and your browser.
+   - Agents: open **TCP 8444** (health endpoint) to the manager only. Honeypot ports (22, 21, 23, 1883, 502, 80/443) should be open to the internet.
+   - MongoDB (:27017) and the Flask API (:5000) are bound to ``127.0.0.1`` and never exposed externally.
+
 Scheduled Jobs
 --------------
 
