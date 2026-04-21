@@ -3,10 +3,6 @@ Security
 
 Melissae applies defense-in-depth across all components:
 
-.. note::
-
-   Agent and manager certificates have a **1-year validity**. Use ``certs list`` on the manager to check expiry dates and ``certs renew <agent-name>`` to reissue a certificate before it expires. The CA certificate is valid for 10 years.
-
 .. list-table::
    :header-rows: 1
    :widths: 20 80
