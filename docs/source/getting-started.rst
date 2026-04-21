@@ -98,6 +98,14 @@ After installation, add your user to the Docker group and **re-login**:
    sudo usermod -aG docker $USER
    # Log out and log back in (or reboot)
 
+Once the manager is running and at least one agent is enrolled, the dashboard is accessible at ``https://<manager-ip>``:
+
+.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
+   :alt: Dashboard after first deployment
+   :align: center
+
+|
+
 Then start the manager stack (MongoDB + Flask API + Nginx/Dashboard):
 
 .. code-block:: text

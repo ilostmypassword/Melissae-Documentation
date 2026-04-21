@@ -39,34 +39,34 @@ Key Features
 Screenshots
 -----------
 
-.. image:: https://github.com/user-attachments/assets/24b1101b-5360-4166-9c74-b13c459568aa
+.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
    :width: 400
-   :alt: Dashboard overview
+   :alt: Overview Dashboard
 
-.. image:: https://github.com/user-attachments/assets/2eda0491-d2b4-4ffc-bc5f-0060878f03d3
+.. image:: https://github.com/user-attachments/assets/e22d8471-272a-4336-9584-714227eb5cbc
    :width: 400
-   :alt: Dashboard statistics
+   :alt: Statistics & Charts
 
-.. image:: https://github.com/user-attachments/assets/ee49fa9a-bafb-4885-9e69-c7fafc7b121d
+.. image:: https://github.com/user-attachments/assets/2b738ee8-3032-4a17-87ae-c8ae0c66859f
    :width: 400
-   :alt: Dashboard charts
+   :alt: Agents Management
 
-.. image:: https://github.com/user-attachments/assets/c7d6bc68-8f2f-43bf-8bda-0c33e50d95ea
+.. image:: https://github.com/user-attachments/assets/fe45fbeb-29dc-452e-ab4d-63d7b2b71750
    :width: 400
-   :alt: Agents page
+   :alt: GeoIP Attack Map
 
-.. image:: https://github.com/user-attachments/assets/7032151e-829c-428c-a9ff-621cb7fdc41b
+.. image:: https://github.com/user-attachments/assets/9ffaaf3d-7195-422c-b4aa-60bf2772285c
    :width: 400
-   :alt: GeoIP map
+   :alt: GeoIP Attack Map (detail)
 
-.. image:: https://github.com/user-attachments/assets/88e8264a-9316-4cbe-8680-5d145729c5a1
+.. image:: https://github.com/user-attachments/assets/146e7fab-bdd7-46f2-b52d-cd5d22ba1764
    :width: 400
-   :alt: Search engine
+   :alt: Search Engine
 
-.. image:: https://github.com/user-attachments/assets/71742a97-e00b-4cbb-b938-8578c7612f49
+.. image:: https://github.com/user-attachments/assets/a5ba43c9-e668-404c-bf7f-631c290e9aeb
    :width: 400
-   :alt: Threat intelligence
+   :alt: Threat Intelligence
 
-.. image:: https://github.com/user-attachments/assets/2a833ee5-7c64-4219-aee3-3fa98dab090c
+.. image:: https://github.com/user-attachments/assets/09ed8e3c-9baa-47fc-821f-b92d5cac41c9
    :width: 400
-   :alt: Scoring details
+   :alt: Threat Intelligence (detail)

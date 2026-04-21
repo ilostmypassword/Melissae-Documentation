@@ -4,6 +4,12 @@ Dashboard
 Overview Dashboard
 ------------------
 
+.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
+   :alt: Overview Dashboard
+   :align: center
+
+|
+
 The main view provides a comprehensive real-time overview:
 
 - **Stat Cards** with trend arrows — Total events, unique IPs, malicious verdicts, per-protocol breakdowns. Each card shows a percentage change vs the previous 24h (↑/↓ indicators).
@@ -22,6 +28,12 @@ The main view provides a comprehensive real-time overview:
 Agents Page
 -----------
 
+.. image:: https://github.com/user-attachments/assets/2b738ee8-3032-4a17-87ae-c8ae0c66859f
+   :alt: Agents Management
+   :align: center
+
+|
+
 The ``/agents`` page provides real-time visibility into the agent fleet (auto-refreshes every 15s):
 
 - Status indicator (healthy / degraded / unreachable / pending) with color coding
@@ -32,6 +44,12 @@ The ``/agents`` page provides real-time visibility into the agent fleet (auto-re
 
 GeoIP Attack Map
 ----------------
+
+.. image:: https://github.com/user-attachments/assets/fe45fbeb-29dc-452e-ab4d-63d7b2b71750
+   :alt: GeoIP Attack Map
+   :align: center
+
+|
 
 The ``/map`` page automatically adapts its display based on the types of IPs detected:
 
@@ -52,6 +70,12 @@ The detection is automatic — public IPs are geolocated and shown on the map, p
 
 Search Engine
 -------------
+
+.. image:: https://github.com/user-attachments/assets/146e7fab-bdd7-46f2-b52d-cd5d22ba1764
+   :alt: Search Engine
+   :align: center
+
+|
 
 **Features:**
 
@@ -85,6 +109,12 @@ Search Engine
 
 Threat Intelligence
 -------------------
+
+.. image:: https://github.com/user-attachments/assets/a5ba43c9-e668-404c-bf7f-631c290e9aeb
+   :alt: Threat Intelligence
+   :align: center
+
+|
 
 The Threat Intelligence page lists all scored IPs with verdict tags, scores, and confidence levels. Each row offers:
 
