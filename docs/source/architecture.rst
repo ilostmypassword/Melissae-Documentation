@@ -84,21 +84,9 @@ Enrollment Sequence
 Log Push Sequence
 -----------------
 
-.. code-block:: text
-
-    Honeypot     log_parser    SQLite Buffer   agent_daemon   Manager API   MongoDB
-       │               │               │               │               │          │
-       │── raw log ───>│               │               │               │          │
-       │               │── normalize ─>│               │               │          │
-       │               │── insert ────>│               │               │          │
-       │               │               │<── fetch(500)─│               │          │
-       │               │               │── batch ─────>│               │          │
-       │               │               │               │── POST /ingest>│          │
-       │               │               │               │               │─ upsert >│
-       │               │               │               │               │<─ {ok} ──│
-       │               │               │<── delete ────│               │          │
-       │               │               │               │               │          │
-       │               │               │        (retry with exp. backoff if unreachable)
+.. image:: log-push-sequence.png
+   :alt: Log push sequence diagram
+   :align: center
 
 .. note::
 
