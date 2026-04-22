@@ -1,4 +1,4 @@
-Welcome to Melissae's documentation!
+Welcome to Melissae's documentation !
 =====================================
 
 .. note::
