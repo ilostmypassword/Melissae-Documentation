@@ -1,39 +1,64 @@
 Overview
 ========
 
-Melissae is a distributed, modular honeypot framework built to emulate real-world network services. It uses a **manager/agent architecture** secured by **mTLS (mutual TLS)** to deploy honeypot sensors across multiple machines while centralizing analysis, threat scoring, and visualization on a single manager.
+Melissae is a distributed, modular honeypot framework built to emulate real-world network services. It uses a **manager/agent architecture** secured by **mTLS (mutual TLS)** to deploy honeypot sensors across multiple machines, while centralizing analysis, threat scoring, and visualization on a single manager node.
 
-Each service module runs in its own container, allowing flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager via encrypted channels. The manager centralizes data in MongoDB, runs threat intelligence scoring, and exposes everything through a dashboard.
+Each service module runs in its own container, enabling flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager over encrypted channels. The manager stores data in MongoDB, runs a continuous threat intelligence scoring engine, and serves a React dashboard.
 
-The project includes a fully functional dashboard offering real-time visibility into attacker behavior, threat scoring, agent health monitoring, and IOC export, making Melissae not just a honeypot, but a lightweight distributed threat intelligence platform.
+.. note::
+
+   Melissae is not just a honeypot — it is a lightweight, distributed threat intelligence platform.
+
+----
 
 Key Features
 ------------
 
-**Distributed Architecture**
-   Deploy honeypot agents across multiple machines. Each agent runs honeypot modules, parses logs locally, and pushes normalized data to a central manager over mTLS-secured channels.
+.. rubric:: Distributed Architecture
 
-**Mutual TLS Security**
-   All communications between agents and manager are authenticated using mutual TLS with an internal PKI (ECDSA P-384 certificates, auto-signed CA). Agent enrollment is handled via one-time tokens.
+Deploy honeypot agents across multiple machines. Each agent runs honeypot modules, parses logs locally, and pushes normalized data to a central manager over mTLS-secured channels.
 
-**Modular Service Support**
-   Configure each agent to expose between 1 and 6+ services simultaneously. In addition to native honeypot modules, Melissae supports **CVE-specific modules**, purpose-built containers that reproduce real vulnerabilities. See :doc:`contributing` for developing new modules.
+.. rubric:: Mutual TLS Security
 
-**Centralized Management Dashboard**
-   Monitor and manage your honeypot fleet through a modern dashboard:
+All agent-to-manager communications are authenticated with mutual TLS using an internal PKI (ECDSA P-384, auto-signed CA). Agent enrollment is handled through one-time tokens with a 10-minute TTL.
 
-   - **Agent Health Monitoring** — Real-time status of all agents with module states, buffer status, and last push time.
-   - **Auto-Refresh** — Dashboard and agents pages auto-refresh (30s / 15s) with live indicators.
-   - **Statistical Analysis** — Visualize attack patterns with interactive charts: multi-day timelines, hourly activity, protocol doughnut, agent bar charts, and a day×hour heatmap.
-   - **Trend Detection** — Stat cards show percentage change vs previous 24h with directional arrows.
-   - **Top Credentials** — See the most attempted usernames across SSH/FTP/Telnet.
-   - **Log Search** — Use the Melissae Query Language (MQL) to search within captured logs, with sortable columns, pagination, and agent filter.
-   - **Logs Export** — Export logs in JSON format, filtered by time, service, IP, or agent.
-   - **Threat Scoring** — Continuous 0-100 scoring engine with multi-factor confidence assessment and per-agent tracking.
-   - **GeoIP Attack Map** — Interactive world map showing attack origins with threat markers colored by verdict and sized by score.
-   - **GeoIP Enrichment** — Automatic geolocation of public IPs via ip-api.com batch API, cached in MongoDB, with country flags in the dashboard.
-   - **STIX 2 Export** — Export Threat Intelligence IOCs as STIX 2.1 indicators directly from the dashboard.
-   - **Killchain View** — Click any IP in Threat Intelligence to open an attack killchain timeline grouped by protocol.
-   - **Automated Hygiene** — A purge removes benign IoCs unseen for 1h and their associated logs.
+.. rubric:: Modular Service Support
+
+Configure each agent to expose up to 6+ services simultaneously. Alongside standard honeypot modules, Melissae supports **CVE-specific modules** — purpose-built containers reproducing real vulnerabilities to detect targeted exploitation attempts. See :doc:`contributing` for guidance on writing new modules.
+
+.. rubric:: Centralized Management Dashboard
+
+Monitor and manage your honeypot fleet through a modern React dashboard:
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 0
+
+   * - **Agent Health**
+     - Real-time status of all agents: module states, buffer occupancy, and last push time.
+   * - **Auto-Refresh**
+     - Dashboard and agents pages refresh every 30s / 15s with live indicators.
+   * - **Statistical Analysis**
+     - Interactive charts: multi-day timelines, hourly activity, protocol doughnut, agent bar charts, day×hour heatmap.
+   * - **Trend Detection**
+     - Stat cards display percentage change vs the previous 24h with directional arrows.
+   * - **Top Credentials**
+     - Most attempted usernames across SSH, FTP, and Telnet.
+   * - **Log Search (MQL)**
+     - Melissae Query Language with logical operators, sortable columns, pagination, and per-agent filtering.
+   * - **Log Export**
+     - Export logs as JSON, filtered by time range, service, IP, or agent.
+   * - **Threat Scoring**
+     - Continuous 0–100 scoring engine with multi-factor confidence assessment and per-agent tracking.
+   * - **GeoIP Attack Map**
+     - Interactive world map showing attack origins; markers colored by verdict and sized by score.
+   * - **GeoIP Enrichment**
+     - Automatic geolocation via ip-api.com batch API, cached in MongoDB, with country flags in the UI.
+   * - **STIX 2.1 Export**
+     - Export IOCs as STIX 2.1 indicators directly from the Threat Intelligence page.
+   * - **Killchain View**
+     - Click any IP to open a full attack timeline grouped by protocol.
+   * - **Automated Hygiene**
+     - Scheduled purge removes benign IoCs unseen for 1h and their associated logs.
 
 
