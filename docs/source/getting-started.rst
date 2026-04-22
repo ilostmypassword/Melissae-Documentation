@@ -42,10 +42,6 @@ Launch the interactive console and run ``install``:
    ./melissae-manager.sh
    manager [0 active] > install
 
-.. danger::
-
-   The installer will randomize your SSH port to a value between 20000 and 30000. **Note this port carefully** — it will be displayed at the end of the installation. You will need it to reconnect via SSH.
-
 The installer performs the following steps:
 
 1. **System packages** — Installs prerequisites via ``apt-get`` (Docker, OpenSSL, python3-pymongo, apache2-utils, cron).
@@ -89,14 +85,16 @@ The installer performs the following steps:
         - ``health_poller.py``
         - Polls agent health endpoints via mTLS
 
-6. **SSH hardening** — A random port (20000–30000) replaces port 22 in ``/etc/ssh/sshd_config``. You are asked whether to restart SSH immediately.
-
-After installation, add your user to the Docker group and **re-login**:
+After installation, add your user to the Docker group and apply the changes immediately:
 
 .. code-block:: bash
 
    sudo usermod -aG docker $USER
-   # Log out and log back in (or reboot)
+   newgrp docker
+
+.. note::
+
+   ``newgrp docker`` activates the group in the current shell session without requiring a full re-login. Alternatively, log out and log back in.
 
 Then start the manager stack (MongoDB + Flask API + Nginx/Dashboard):
 
@@ -171,6 +169,10 @@ Launch the interactive console and run the install command with the manager URL 
    ./melissae-agent.sh
    agent:? [0 active] > install https://192.168.1.10:8443 a1b2c3d4...
 
+.. danger::
+
+   The agent installer will randomize your SSH port to a value between 20000 and 30000. **Note this port carefully** — it will be displayed at the end of the installation. You will need it to reconnect via SSH to the agent server.
+
 The agent installer performs the following steps:
 
 1. **System packages** — Installs ``ca-certificates``, ``curl``, ``jq``, ``openssl``, ``python3``.
@@ -234,11 +236,8 @@ The agent installer performs the following steps:
 
 6. **mTLS test** — Sends a test ``POST /api/ingest`` to the manager with the new certificates. An HTTP 400 or 405 response confirms the mTLS channel is functional.
 
-7. **SSH hardening** — A random port (20000–30000) replaces port 22 in ``/etc/ssh/sshd_config``, identical to the manager step.
+7. **SSH hardening** — A random port (20000–30000) replaces port 22 in ``/etc/ssh/sshd_config``. You are asked whether to restart SSH immediately. **Reconnect on the new port after installation.**
 
-.. danger::
-
-   The agent installer will also randomize your SSH port. **Note the new port carefully** — it will be displayed at the end of the installation. You will need it to reconnect via SSH to the agent server.
 
 Configuring Modules
 -------------------
