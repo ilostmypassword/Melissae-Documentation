@@ -13,37 +13,9 @@ Melissae uses a distributed **manager/agent** architecture:
 - **Manager**: Centralizes MongoDB, the Flask API, the dashboard, threat scoring, and agent monitoring. Does not run honeypots.
 - **Agents**: Deploy honeypot modules, parse raw logs locally into normalized JSON, and push data to the manager. Expose a health endpoint for the manager to poll.
 
-.. code-block:: text
-
-                       ┌──────────────────────────────────────────────┐
-                       │            MANAGER SERVER                    │
-                       │                                              │
-                       │  ┌──────────┐  ┌───────────┐  ┌──────────┐ │
-                       │  │ Dashboard │  │  Flask API │  │ MongoDB  │ │
-                       │  │  (Nginx)  │  │  :5000     │  │  :27017  │ │
-                       │  └────┬─────┘  └─────┬──────┘  └────┬─────┘ │
-                       │       │              │               │       │
-                       │  Nginx Reverse Proxy                         │
-                       │  :443   → dashboard + /api/* (HTTPS)         │
-                       │  :8443  → /api/ingest (mTLS termination)     │
-                       │                                              │
-                       │  threatIntel.py (cron 1min)                  │
-                       │  purgeLogs.py   (cron 3h)                    │
-                       │  health_poller.py (cron 1min)                │
-                       │                                              │
-                       │  PKI/CA (ca.key, ca.crt, agent certs)        │
-                       └──────────────┬───────────────────────────────┘
-                                      │ mTLS (:8443 ingestion)
-                       ┌──────────────┼──────────────────────┐
-                       │              │                       │
-              ┌────────▼──────┐ ┌────▼───────────┐  ┌───────▼────────┐
-              │  AGENT "eu-1" │ │  AGENT "eu-2"  │  │  AGENT "us-1"  │
-              │               │ │                │  │                │
-              │  Honeypots    │ │  Honeypots     │  │  Honeypots     │
-              │  Log Parser   │ │  Log Parser    │  │  Log Parser    │
-              │  SQLite Buffer│ │  SQLite Buffer │  │  SQLite Buffer │
-              │  :8444 health │ │  :8444 health  │  │  :8444 health  │
-              └───────────────┘ └────────────────┘  └────────────────┘
+.. image:: manager-agent-model.png
+   :alt: Manager / Agent architecture diagram
+   :align: center
 
 Communication
 -------------
