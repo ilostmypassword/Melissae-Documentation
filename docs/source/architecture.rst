@@ -77,26 +77,9 @@ Workflow
 Enrollment Sequence
 -------------------
 
-.. code-block:: text
-
-    Admin            Manager CLI        Manager API         Agent CLI
-      │                   │                   │                   │
-      │── enroll name ───>│                   │                   │
-      │                   │── gen cert ──────>│ (stored locally)  │
-      │                   │── store token ───>│                   │
-      │<── print token ───│                   │                   │
-      │                   │                   │                   │
-      │        (copy token, run on agent server)                  │
-      │                   │                   │                   │
-      │──────────────────────── install <url> <token> ──────────>│
-      │                   │                   │<── POST /api/enroll
-      │                   │                   │    (one-time token)│
-      │                   │                   │── verify & consume │
-      │                   │                   │── return certs ──>│
-      │                   │                   │                   │── write config.yml
-      │                   │                   │<── POST /api/ingest│ (mTLS connectivity test)
-      │                   │                   │── 400/405 OK ────>│
-      │                   │                   │                   │── agent registered
+.. image:: enrollment-sequence.png
+   :alt: Enrollment sequence diagram
+   :align: center
 
 Log Push Sequence
 -----------------
