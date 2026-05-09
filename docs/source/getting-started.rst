@@ -11,7 +11,7 @@ The manager installation will automatically install:
 - ``ca-certificates``, ``curl``, ``cron``
 - ``openssl`` (PKI generation)
 - ``apache2-utils`` (``htpasswd`` for dashboard basic-auth)
-- ``python3-pymongo`` (interaction with MongoDB from cron scripts)
+- ``python3-pymongo``, ``python3-yaml`` (interaction with MongoDB and YAML rules from cron scripts)
 - Docker CE + Docker Compose plugin (if not already present)
 
 The agent installation will automatically install:
@@ -44,12 +44,19 @@ Launch the interactive console and run ``install``:
 
 The installer performs the following steps:
 
-1. **System packages** — Installs prerequisites via ``apt-get`` (Docker, OpenSSL, python3-pymongo, apache2-utils, cron).
+1. **System packages** — Installs prerequisites via ``apt-get`` (Docker, OpenSSL, ``python3-pymongo``, ``python3-yaml``, ``apache2-utils``, ``cron``).
 
-2. **PKI initialization** — Generates the Certificate Authority:
+2. **PKI initialization** — Prompts for the Certificate Authority identity (this CN appears in every TLS certificate — prefer a neutral name to avoid revealing the deployment as a honeypot):
+
+   .. code-block:: text
+
+      CA Common Name [manager.local CA]:
+      CA Organization (optional, leave blank to omit):
+
+   The installer then generates:
 
    - CA key: ECDSA P-384, stored in ``pki/ca/ca.key`` (mode 600)
-   - CA certificate: 10-year validity, subject ``CN=Melissae CA/O=Melissae Honeypot Framework``
+   - CA certificate: 10-year validity, subject built from your inputs (``CN``, optional ``O``)
    - An OpenSSL config (``pki/ca/openssl.cnf``), serial file, and index for future cert issuance
 
 3. **Manager certificate** — The installer detects the machine's IP and hostname, then asks:
@@ -60,9 +67,9 @@ The installer performs the following steps:
         Detected IP:       192.168.1.10
         Detected hostname: manager.local
 
-      Public FQDN (e.g. manager.example.com) [manager.local]:
+      Public FQDN or IP (e.g. manager.example.com) [192.168.1.10]:
 
-   A dual-purpose (client + server) certificate is generated with SANs covering the FQDN, hostname, IP, ``localhost``, and ``127.0.0.1``.
+   A dual-purpose (client + server) certificate is generated with SANs covering the FQDN/IP entered, the detected IP (when distinct), ``localhost``, and ``127.0.0.1``.
 
 4. **Dashboard credentials** — Prompts for a username (default: ``melissae``) and password, saved to ``dashboard/conf/htpasswd`` using bcrypt (``htpasswd -Bbc``).
 
