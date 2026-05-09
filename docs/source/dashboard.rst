@@ -121,3 +121,37 @@ The Threat Intelligence page lists all scored IPs with verdict tags, scores, and
 - **Details panel** — Modal showing IP, verdict, score/100, confidence, timestamps, and rule reasons.
 - **Killchain timeline** — Events grouped by protocol with start/end timestamps, ordered from oldest to newest.
 - **STIX 2.1 Export** — Download a STIX 2.1 bundle (one indicator per IP) for selected or all threats.
+
+Alerts
+------
+
+The ``/alerts`` page is the primary surface for the **rule-based alerting engine** introduced in v2.2.
+
+- **Two view modes** — *Grouped* (one row per ``rule_id`` + IP, with last seen and hit count) or *Flat* (one row per individual alert).
+- **Filters** — Status (``new`` / ``acknowledged`` / ``resolved`` / *All*) and severity (``critical`` / ``high`` / ``medium`` / ``low``).
+- **Bulk actions** — Select multiple alerts and acknowledge or resolve them in a single request.
+- **Auto-refresh** — New alerts appear every 20 seconds.
+- **Drill-down** — Each alert links to the matching IP killchain and to the underlying logs.
+
+Agent Topology
+--------------
+
+A dedicated interactive canvas rendering the live deployment as a graph **manager ↔ agents ↔ modules**:
+
+- Drag-and-drop positioning of any node, with positions persisted in ``localStorage``.
+- Zoom / pan / fit-to-view controls.
+- Per-protocol coloring of module nodes (SSH, HTTP, FTP, Modbus, MQTT, Telnet).
+- Live health overlay reusing the same data feed as the *Agents* page.
+
+Activity & Attacker Statistics
+------------------------------
+
+Two dedicated statistics pages complement the main dashboard:
+
+- ``/stats/activity`` — traffic patterns over time (volumes, protocol mix, hourly distribution, day×hour heatmap).
+- ``/stats/attackers`` — per-attacker breakdowns (top IPs, top credentials, top user-agents, geo distribution).
+
+Rules
+-----
+
+The API exposes the catalog of YAML rules at ``GET /api/rules`` together with last-run metadata (``last_run_at``, ``last_alerts_emitted``, ``last_groups_triggered``). The dashboard surfaces this catalog so reviewers can see at a glance which rules are enabled, their severity, MQL query, threshold and contribution to the score.

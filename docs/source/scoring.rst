@@ -1,10 +1,12 @@
-Scoring
-=======
+Scoring & Alerting
+==================
+
+Starting with **v2.2**, Melissae replaces the continuous weighted-signal scoring engine with a **rule-based alerting engine**. Detection logic now lives in declarative YAML rules under ``rules/``, and each observed IP's verdict is the **sum of the scores of every rule that matched its activity**, capped at 100.
 
 Scale & Verdicts
 -----------------
 
-Scores use a **continuous 0–100 scale** with additive weighted signals and log-scaling for volume-dependent indicators.
+Scores still use a **0–100 scale**. Verdict thresholds are unchanged:
 
 .. list-table::
    :header-rows: 1
@@ -21,138 +23,152 @@ Scores use a **continuous 0–100 scale** with additive weighted signals and log
      - Active scanning, failed auth, reconnaissance
    * - 70–100
      - Malicious
-     - Compromise, post-exploitation, ICS tampering
+     - Compromise, post-exploitation, ICS tampering, confirmed CVE exploitation
 
-Scoring Signals
----------------
+Rule Format
+-----------
 
-The following signals accumulate additively. The total is capped at 100.
+Each rule is a YAML file under ``rules/`` (one file per rule, named ``MLSxxx.yml``):
+
+.. code-block:: yaml
+
+   id: MLS008
+   name: SSH brute-force attempt
+   description: >
+     Multiple SSH authentication failures from the same IP within a short
+     window. Indicates credential-stuffing or brute-force activity.
+   severity: high
+   enabled: true
+   schedule: "*/1 * * * *"
+   lookback: 1m
+   mql: 'protocol:ssh AND action:Failed'
+   group_by: ip
+   threshold: 3
+   score: 40
+   tags: [brute-force, credential-access]
+   mitre: [T1110]
 
 .. list-table::
    :header-rows: 1
-   :widths: 35 40 15 10
+   :widths: 20 80
 
-   * - Signal
-     - Trigger
-     - Max pts
-     - Scaling
-   * - HTTP activity
-     - Any HTTP requests
-     - 20
-     - log₂
-   * - MQTT activity
-     - Any MQTT events
-     - 15
-     - log₂
-   * - Sensitive HTTP paths
-     - Probes to ``/wp-admin``, ``/.env``, ``/.git``, ``/admin``, etc.
-     - 35
-     - per unique path
-   * - HTTP burst
-     - ≥20 hits in a 5-minute window
-     - 25
-     - linear
-   * - Auth failures (low)
-     - 1–4 failures across SSH/FTP/Telnet
-     - 32
-     - 8 pts each
-   * - Auth failures (brute-force)
-     - ≥5 failures across SSH/FTP/Telnet
-     - 35
-     - linear (capped)
-   * - SSH burst
-     - ≥5 SSH attempts in 5 min
-     - 20
-     - linear (capped)
-   * - FTP burst
-     - ≥5 FTP attempts in 5 min
-     - 20
-     - linear (capped)
-   * - Telnet burst
-     - ≥5 Telnet attempts in 5 min
-     - 20
-     - linear (capped)
-   * - Telnet activity
-     - Any Telnet events (deprecated protocol)
-     - 15
-     - fixed
-   * - Successful Telnet login
-     - Possible CVE exploitation
-     - 45
-     - fixed
-   * - CVE exploitation confirmed
-     - ``cve`` field present in log entry
-     - 50
-     - fixed
-   * - Successful SSH login
-     - —
+   * - Field
+     - Meaning
+   * - ``id``
+     - Stable rule identifier (e.g. ``MLS008``).
+   * - ``name`` / ``description``
+     - Human-readable label and longer explanation surfaced in the dashboard.
+   * - ``severity``
+     - One of ``low``, ``medium``, ``high``, ``critical``. Drives UI styling and filtering.
+   * - ``enabled``
+     - Boolean; disabled rules are loaded but never evaluated.
+   * - ``schedule``
+     - Cron expression controlling how often the rule is re-evaluated by ``rule_engine.py``.
+   * - ``lookback``
+     - Time window scanned at each run (``s`` / ``m`` / ``h`` / ``d`` suffixes).
+   * - ``mql``
+     - Detection query in :ref:`Melissae Query Language <mql>` (the same DSL as the dashboard search bar).
+   * - ``group_by``
+     - Aggregation key (typically ``ip``).
+   * - ``threshold``
+     - Minimum number of matching events in the window required to emit an alert.
+   * - ``score``
+     - Points contributed to the per-IP verdict when the rule fires.
+   * - ``tags`` / ``mitre``
+     - Free-form tags and MITRE ATT&CK technique IDs for classification.
+
+Built-in Rules
+--------------
+
+Twelve rules ship with v2.2, covering the signals previously hard-coded in the scoring engine:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 12 35 12 10 31
+
+   * - ID
+     - Detection
+     - Severity
+     - Score
+     - Notes
+   * - MLS001
+     - CVE exploitation attempt (``cve:CVE``)
+     - critical
+     - 70
+     - Any hit on a CVE-tagged module
+   * - MLS002
+     - FTP brute-force (``protocol:ftp AND action:"Login failed"``)
+     - high
+     - 30
+     - ≥5 failures / 5 min
+   * - MLS003 – MLS007
+     - Successful logins, post-exploitation commands, multi-protocol activity, …
+     - varies
+     - varies
+     - See ``rules/`` for the full set
+   * - MLS008
+     - SSH brute-force (``protocol:ssh AND action:Failed``)
+     - high
      - 40
-     - fixed
-   * - Successful FTP login
-     - —
-     - 35
-     - fixed
-   * - FTP file transfers
-     - Upload or download detected
-     - 25
-     - linear (capped)
-   * - Post-compromise commands
-     - ``sudo``, ``wget``, ``curl``, ``nc``, ``nmap``, etc. over SSH
-     - 45
-     - linear (capped)
-   * - Modbus read operations
-     - —
-     - 25
-     - linear (capped)
-   * - Modbus write operations
-     - —
-     - 50
-     - linear (capped)
-   * - Multi-protocol activity
-     - ≥3 distinct protocols observed
-     - 15
-     - fixed
-   * - Multiple services compromised (SSH + FTP)
-     - SSH and FTP both successfully logged in
-     - 20
-     - fixed
-   * - Multiple services compromised (Telnet + SSH/FTP)
-     - Telnet and SSH or FTP both successfully logged in
-     - 20
-     - fixed (cumulates with the row above if all three are compromised)
-   * - ICS tampering with credentials
-     - Modbus write + SSH or FTP successful login
-     - 25
-     - fixed
+     - ≥3 failures / 1 min
+   * - MLS009 – MLS011
+     - Modbus reads/writes, Telnet anomalies, …
+     - varies
+     - varies
+     - See ``rules/`` for the full set
+   * - MLS012
+     - Nmap scan (``protocol:http AND nmap``)
+     - low
+     - 5
+     - User-agent based recon detection
 
-.. note::
+The complete set of rules — including exact MQL queries, thresholds and scores — is the source of truth in the ``rules/`` directory and is also exposed by the API at ``GET /api/rules``.
 
-   Scores accumulate across all signals but are capped at **100**. A single high-value signal (e.g. CVE exploitation + successful Telnet login = 95 pts) can push an IP directly to Malicious without needing volume.
+How Scoring Works
+-----------------
 
-Confidence
-----------
+1. ``rule_engine.py`` loads every YAML file in ``rules/`` (configurable via ``MELISSAE_RULES_DIR``).
+2. For each enabled rule whose ``schedule`` is due, it pulls the logs of the last ``lookback`` window, runs the ``mql`` query against them and groups the matches by ``group_by``.
+3. Every group with at least ``threshold`` matches produces an **alert** in MongoDB (``alerts`` collection) carrying ``rule_id``, ``severity``, ``score``, ``ip``, time range and matching log references.
+4. ``threatIntel.py`` aggregates alerts (rolling 90-day window) per IP into the ``threats`` collection. The verdict score is the sum of distinct rule scores, capped at 100; the verdict label follows the table above.
+5. The dashboard consumes ``threats`` (Threat Intelligence, Map) and ``alerts`` (Alerts page) to drive its views.
 
-Confidence is a weighted combination of 5 factors (0.10 – 1.00):
+This design makes detection logic **transparent and auditable**: every score increment is traceable to a specific rule, and operators can enable/disable, retune or extend rules without touching engine code.
 
-.. list-table::
-   :header-rows: 1
-   :widths: 25 15 60
+.. _mql:
 
-   * - Factor
-     - Weight
-     - Based on
-   * - Volume
-     - 20%
-     - Log-scaled event count
-   * - Signal diversity
-     - 25%
-     - Number of distinct scoring reasons
-   * - Protocol breadth
-     - 10%
-     - Number of protocols seen
-   * - Time spread
-     - 15%
-     - Observation duration (up to 24h)
-   * - Indicator certainty
-     - 30%
-     - High-confidence signals (login, post-exploit, ICS writes, telnet CVE exploitation)
+Melissae Query Language (MQL)
+-----------------------------
+
+MQL is the small DSL used both by the dashboard search bar and by the ``mql`` field of each rule. Supported features:
+
+- Field-scoped terms — ``protocol:ssh``, ``action:"Login failed"``, ``ip:1.2.3.4``, ``cve:CVE-2026-24061``, ``user:root``, ``user-agent:nmap``, ``path:/admin``, ``hour:14``, ``date:2026-05-09``, ``agent:my-agent``.
+- Free-text terms — bare words match against any field.
+- Boolean operators — ``AND`` / ``OR`` / ``NOT`` (also ``and`` / ``or`` / ``!``), with parenthesized grouping.
+- Quoted values — ``"Login failed"`` to match phrases containing spaces.
+
+Examples
+^^^^^^^^
+
+.. code-block:: text
+
+   protocol:ssh AND action:Failed
+   protocol:ftp AND action:"Login failed"
+   protocol:modbus AND action:write
+   cve:CVE
+   protocol:http AND nmap
+   ip:192.168.1.10 AND NOT action:successful
+
+Authoring New Rules
+-------------------
+
+To add a new detection:
+
+1. Drop a new ``MLSxxx.yml`` under ``rules/`` with a unique ``id``.
+2. Pick an appropriate ``severity``, ``score``, ``threshold`` and ``lookback``.
+3. Express the matching condition as an ``mql`` query.
+4. Reload the manager (``restart``) — the rule engine picks up the file at next tick.
+
+.. tip::
+
+   Keep ``score`` values proportional to confidence: high-confidence single-event detections (CVE exploitation, ICS writes) typically warrant 50–70 points, whereas noisy signals (scans, low-volume failures) should stay in the 5–20 range so they only escalate to *Suspicious* / *Malicious* when combined with other rules.

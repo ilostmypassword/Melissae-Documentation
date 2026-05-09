@@ -77,12 +77,12 @@ The installer performs the following steps:
         - Purpose
       * - Every minute
         - ``scripts/threatIntel.py``
-        - Recalculates threat scores and verdicts
+        - Runs the YAML rule engine and recalculates threat verdicts
       * - Every 3 hours
         - ``scripts/purgeLogs.py``
         - Removes stale benign IoCs and associated logs
       * - Every minute
-        - ``health_poller.py``
+        - ``scripts/health_poller.py``
         - Polls agent health endpoints via mTLS
 
 After installation, add your user to the Docker group and apply the changes immediately:

@@ -69,8 +69,8 @@ Workflow
 2. ``log_parser.py`` performs **incremental parsing**: reads new log lines, normalizes to JSON, deduplicates with deterministic hashes.
 3. ``agent_daemon.py`` buffers parsed logs in SQLite, pushes batches to ``POST /api/ingest`` with mTLS.
 4. The manager API validates the mTLS identity, sanitizes inputs, and upserts into MongoDB (``logs``).
-5. ``threatIntel.py`` recalculates verdicts into MongoDB (``threats``), tracking which agents observed each IP.
-6. The dashboard consumes ``/api/logs``, ``/api/threats``, and ``/api/agents``.
+5. ``rule_engine.py`` (invoked from ``threatIntel.py``) evaluates the YAML rules in ``rules/`` against recent logs, writes per-rule alerts into MongoDB (``alerts``) and aggregates them into per-IP verdicts (``threats``), tracking which agents observed each IP.
+6. The dashboard consumes ``/api/logs``, ``/api/threats``, ``/api/agents``, ``/api/alerts`` and ``/api/rules``.
 7. ``health_poller.py`` polls agents via mTLS and updates their status in MongoDB.
 8. The manager CLI can send remote management commands (``POST /command``) to agents via mTLS (start, stop, restart, status).
 
@@ -109,11 +109,11 @@ On the **manager** (added during ``install``):
      - Script
      - Purpose
    * - Every minute
-     - ``threatIntel.py``
-     - Recalculates threat verdicts
+     - ``scripts/threatIntel.py``
+     - Runs the rule engine and recalculates threat verdicts
    * - Every minute
-     - ``health_poller.py``
+     - ``scripts/health_poller.py``
      - Polls agent health endpoints
    * - Every 3 hours
-     - ``purgeLogs.py``
+     - ``scripts/purgeLogs.py``
      - Removes stale benign IoCs and logs

@@ -3,7 +3,7 @@ Overview
 
 Melissae is a distributed, modular honeypot framework built to emulate real-world network services. It uses a **manager/agent architecture** secured by **mTLS (mutual TLS)** to deploy honeypot sensors across multiple machines, while centralizing analysis, threat scoring, and visualization on a single manager node.
 
-Each service module runs in its own container, enabling flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager over encrypted channels. The manager stores data in MongoDB, runs a continuous threat intelligence scoring engine, and serves a React dashboard.
+Each service module runs in its own container, enabling flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager over encrypted channels. The manager stores data in MongoDB, runs a **rule-based alerting engine** that evaluates declarative YAML detection rules against ingested logs, and serves a React dashboard.
 
 .. note::
 
@@ -48,8 +48,14 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
      - Melissae Query Language with logical operators, sortable columns, pagination, and per-agent filtering.
    * - **Log Export**
      - Export logs as JSON, filtered by time range, service, IP, or agent.
-   * - **Threat Scoring**
-     - Continuous 0–100 scoring engine with multi-factor confidence assessment and per-agent tracking.
+   * - **Rule-Based Alerting**
+     - Declarative YAML rule engine (12 built-in rules: brute-force, CVE exploitation, ICS writes, recon scans, …). Each rule contributes its score to the per-IP 0–100 verdict.
+   * - **Alerts Page**
+     - Dedicated view with grouped/flat modes, severity & status filters and bulk actions (acknowledge, resolve).
+   * - **Agent Topology**
+     - Interactive manager ↔ agents ↔ modules canvas with drag, zoom and persisted layout.
+   * - **Activity & Attacker Stats**
+     - Dedicated statistics pages for traffic patterns and per-attacker breakdowns.
    * - **GeoIP Attack Map**
      - Interactive world map showing attack origins; markers colored by verdict and sized by score.
    * - **GeoIP Enrichment**
