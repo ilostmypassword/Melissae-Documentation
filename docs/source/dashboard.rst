@@ -4,7 +4,7 @@ Dashboard
 Overview Dashboard
 ------------------
 
-.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
+.. image:: overview-dashboard.png
    :alt: Overview Dashboard
    :align: center
 
@@ -28,7 +28,7 @@ The main view provides a comprehensive real-time overview:
 Agents Page
 -----------
 
-.. image:: https://github.com/user-attachments/assets/2b738ee8-3032-4a17-87ae-c8ae0c66859f
+.. image:: overview-agents.png
    :alt: Agents Management
    :align: center
 
@@ -45,8 +45,14 @@ The ``/agents`` page provides real-time visibility into the agent fleet (auto-re
 GeoIP Attack Map
 ----------------
 
-.. image:: https://github.com/user-attachments/assets/fe45fbeb-29dc-452e-ab4d-63d7b2b71750
+.. image:: explore-geo-map-1.png
    :alt: GeoIP Attack Map
+   :align: center
+
+|
+
+.. image:: explore-geo-map-2.png
+   :alt: GeoIP Attack Map (country breakdown)
    :align: center
 
 |
@@ -71,7 +77,7 @@ The detection is automatic — public IPs are geolocated and shown on the map, p
 Search Engine
 -------------
 
-.. image:: https://github.com/user-attachments/assets/146e7fab-bdd7-46f2-b52d-cd5d22ba1764
+.. image:: explore-search.png
    :alt: Search Engine
    :align: center
 
@@ -110,8 +116,14 @@ Search Engine
 Threat Intelligence
 -------------------
 
-.. image:: https://github.com/user-attachments/assets/a5ba43c9-e668-404c-bf7f-631c290e9aeb
+.. image:: intelligence-threat-intelligence-1.png
    :alt: Threat Intelligence
+   :align: center
+
+|
+
+.. image:: intelligence-threat-intelligence-2.png
+   :alt: Threat Intelligence (details)
    :align: center
 
 |
@@ -124,6 +136,12 @@ The Threat Intelligence page lists all scored IPs with verdict tags and accumula
 
 Alerts
 ------
+
+.. image:: detection-alerts.png
+   :alt: Alerts page
+   :align: center
+
+|
 
 The ``/alerts`` page is the primary surface for the **rule-based alerting engine** introduced in v2.2.
 
@@ -145,6 +163,24 @@ A dedicated interactive canvas rendering the live deployment as a graph **manage
 
 Activity & Attacker Statistics
 ------------------------------
+
+.. image:: statistics-traffic-1.png
+   :alt: Traffic statistics
+   :align: center
+
+|
+
+.. image:: statistics-traffic-2.png
+   :alt: Traffic statistics (details)
+   :align: center
+
+|
+
+.. image:: statistics-threats-1.png
+   :alt: Attacker statistics
+   :align: center
+
+|
 
 Two dedicated statistics pages complement the main dashboard:
 
