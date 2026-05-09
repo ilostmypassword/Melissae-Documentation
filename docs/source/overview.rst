@@ -5,10 +5,6 @@ Melissae is a distributed, modular honeypot framework built to emulate real-worl
 
 Each service module runs in its own container, enabling flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager over encrypted channels. The manager stores data in MongoDB, runs a **rule-based alerting engine** that evaluates declarative YAML detection rules against ingested logs, and serves a React dashboard.
 
-.. note::
-
-   Melissae is not just a honeypot — it is a lightweight, distributed threat intelligence platform.
-
 ----
 
 Key Features
