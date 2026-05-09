@@ -160,7 +160,7 @@ FTP
      - Image
      - Container Name
    * - FTP Server
-     - fauria/vsftpd
+     - debian:bookworm-slim + vsftpd (custom image)
      - melissae_ftp
 
 **Log format:**
@@ -181,7 +181,8 @@ FTP
 **Usage:**
 
 - The shared repository with the FTP container is ``modules/ftp/server``.
-- Modify module credentials in ``agent/docker-compose.yml`` (default: ``ftpuser:ftppass``).
+- The image is built locally from ``modules/ftp/Dockerfile`` (Debian slim + ``vsftpd`` with an explicit PAM stack); base configuration lives in ``modules/ftp/conf/vsftpd.conf``.
+- Modify module credentials in ``modules/ftp/Dockerfile`` (default: ``ftpuser:ftppass``).
 
 Modbus
 ------

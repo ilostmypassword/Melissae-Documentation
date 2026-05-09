@@ -12,7 +12,11 @@ Roadmap
 
 - Modbus Industrial Honeypot Module — Complete TCP honeypot with PLC emulation
 - React Dashboard Redesign — Modern SPA with React 19, Vite, Tailwind CSS
-- Continuous Scoring Engine — 0-100 scale with multi-factor confidence
+- Rule-Based Alerting Engine — Declarative YAML rules (MLS001 … MLS012) with MQL queries, severities, schedules and accumulated 0–100 verdicts
+- Alerts Page — Grouped/flat views, severity & status filters, bulk acknowledge/resolve
+- Agent Topology — Interactive manager ↔ agents ↔ modules canvas with persisted layout
+- Activity & Attacker Statistics Pages
+- Custom FTP Honeypot Image — Debian slim + vsftpd, dropping the third-party ``fauria/vsftpd`` dependency
 - GeoIP Attack Map — Interactive world map with ip-api.com enrichment
 - Hybrid Deployment — Support for internal, external, and mixed networks
 - CVE Module Framework — Dedicated category for vulnerability-specific honeypots
@@ -37,7 +41,7 @@ Roadmap
 - Automated PDF/HTML reports
 - Behavioral clustering (attack pattern grouping)
 - Adaptive deception (dynamic honeypot responses)
-- Rules UI to tune thresholds without redeploying
+- Rules UI to tune thresholds without redeploying (engine landed in v2.2, UI still pending)
 
 Credits
 -------
@@ -45,3 +49,4 @@ Credits
 Thank you to all contributors for helping the project move forward.
 
 - `summoningshells <https://github.com/summoningshells>`_
+- `Mlh4040 <https://github.com/Mlh4040>`_

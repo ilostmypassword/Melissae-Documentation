@@ -77,12 +77,12 @@ The installer performs the following steps:
         - Purpose
       * - Every minute
         - ``scripts/threatIntel.py``
-        - Recalculates threat scores and verdicts
+        - Runs the YAML rule engine and recalculates threat verdicts
       * - Every 3 hours
         - ``scripts/purgeLogs.py``
         - Removes stale benign IoCs and associated logs
       * - Every minute
-        - ``health_poller.py``
+        - ``scripts/health_poller.py``
         - Polls agent health endpoints via mTLS
 
 After installation, add your user to the Docker group and apply the changes immediately:
@@ -306,6 +306,6 @@ Authenticate with the credentials set during ``install``. Your browser will show
 
    The agent should appear with status ``healthy`` within a minute of its first log push.
 
-.. image:: https://github.com/user-attachments/assets/cb5ee4c9-2710-4165-b9cb-f520ab26f814
+.. image:: overview-dashboard.png
    :alt: Dashboard after first deployment
    :align: center

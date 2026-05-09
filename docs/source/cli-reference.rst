@@ -42,6 +42,9 @@ Manager CLI
    * -
      - ``build``
      - Rebuild manager containers
+   * -
+     - ``update``
+     - Stop services, ``git pull --ff-only``, rebuild containers without cache, then prompt to restart
    * - **Agents**
      - ``enroll <name> <host>``
      - Generate enrollment token for new agent
@@ -120,6 +123,9 @@ Agent CLI
    * -
      - ``build``
      - Rebuild containers
+   * -
+     - ``update``
+     - Stop modules and daemon, ``git pull --ff-only``, rebuild honeypot containers without cache, then prompt to restart enabled modules
    * - **Modules**
      - ``list``
      - List available modules with status
