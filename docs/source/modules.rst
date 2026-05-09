@@ -1,7 +1,7 @@
 Modules
 =======
 
-The choice of modular, containerized deployment means that contributors can easily develop new modules. There are currently 6 native honeypot modules, 1 CVE module, and 3 system services.
+The choice of modular, containerized deployment means that contributors can easily develop new modules. There are currently 6 native honeypot modules, 1 CVE module, and 4 system services (MongoDB, Flask API, Nginx/Dashboard on the manager, plus the agent daemon health endpoint).
 
 .. note::
 

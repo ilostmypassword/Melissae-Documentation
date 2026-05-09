@@ -154,7 +154,7 @@ The ``/alerts`` page is the primary surface for the **rule-based alerting engine
 Agent Topology
 --------------
 
-A dedicated interactive canvas rendering the live deployment as a graph **manager ↔ agents ↔ modules**:
+Embedded in the main Overview Dashboard, an interactive canvas renders the live deployment as a graph **manager ↔ agents ↔ modules**:
 
 - Drag-and-drop positioning of any node, with positions persisted in ``localStorage``.
 - Zoom / pan / fit-to-view controls.

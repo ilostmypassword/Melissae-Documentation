@@ -66,24 +66,7 @@ The installer performs the following steps:
 
 4. **Dashboard credentials** — Prompts for a username (default: ``melissae``) and password, saved to ``dashboard/conf/htpasswd`` using bcrypt (``htpasswd -Bbc``).
 
-5. **Cron jobs** — Three scheduled tasks are added to the system crontab:
-
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 35 45
-
-      * - Schedule
-        - Script
-        - Purpose
-      * - Every minute
-        - ``scripts/threatIntel.py``
-        - Runs the YAML rule engine and recalculates threat verdicts
-      * - Every 3 hours
-        - ``scripts/purgeLogs.py``
-        - Removes stale benign IoCs and associated logs
-      * - Every minute
-        - ``scripts/health_poller.py``
-        - Polls agent health endpoints via mTLS
+5. **Cron jobs** — Three scheduled tasks are added to the system crontab (rule engine, health poller, log purge). See :ref:`Scheduled Jobs <scheduled-jobs>` in the Architecture page for the full schedule.
 
 After installation, add your user to the Docker group and apply the changes immediately:
 
@@ -218,7 +201,7 @@ The agent installer performs the following steps:
           log_path: "ftp/vsftpd.log"
         http:
           enabled: true
-          log_path: "http/access.log"
+          log_path: "web/access.log"
         modbus:
           enabled: true
           log_path: "modbus/modbus.log"

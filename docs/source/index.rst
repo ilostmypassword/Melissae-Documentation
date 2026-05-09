@@ -13,11 +13,11 @@ Check out the :doc:`getting-started` section to begin deploying your honeypot fl
    :hidden:
 
    overview
+   getting-started
    architecture
    structure
    modules
    dashboard
    scoring
-   getting-started
    cli-reference
    contributing

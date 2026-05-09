@@ -84,7 +84,7 @@ Twelve rules ship with v2.2, covering the signals previously hard-coded in the s
 
 .. list-table::
    :header-rows: 1
-   :widths: 12 35 12 10 31
+   :widths: 10 38 12 8 32
 
    * - ID
      - Detection
@@ -101,21 +101,51 @@ Twelve rules ship with v2.2, covering the signals previously hard-coded in the s
      - high
      - 30
      - ≥5 failures / 5 min
-   * - MLS003 – MLS007
-     - Successful logins, post-exploitation commands, multi-protocol activity, …
-     - varies
-     - varies
-     - See ``rules/`` for the full set
+   * - MLS003
+     - Malicious FTP file activity (LIST / PUT / GET / DELETE / RMDIR)
+     - critical
+     - 70
+     - Hands-on activity post-auth
+   * - MLS004
+     - Successful FTP login (``protocol:ftp AND action:"Login successful"``)
+     - critical
+     - 70
+     - Any success on the honeypot
+   * - MLS005
+     - HTTP request burst / web scanning (static assets filtered out)
+     - low
+     - 10
+     - ≥15 dynamic requests / 3 min
+   * - MLS006
+     - HTTP probing of sensitive paths (``/wp-admin``, ``/.git``, ``/.env``, …)
+     - medium
+     - 15
+     - ≥3 hits / 3 min
+   * - MLS007
+     - Modbus write operation — ICS tampering
+     - high
+     - 45
+     - Any write attempt
    * - MLS008
      - SSH brute-force (``protocol:ssh AND action:Failed``)
      - high
      - 40
      - ≥3 failures / 1 min
-   * - MLS009 – MLS011
-     - Modbus reads/writes, Telnet anomalies, …
-     - varies
-     - varies
-     - See ``rules/`` for the full set
+   * - MLS009
+     - Post-compromise SSH command (``wget``, ``curl``, ``chmod``, …)
+     - critical
+     - 70
+     - Hands-on-keyboard activity
+   * - MLS010
+     - Successful SSH login (``protocol:ssh AND action:successful``)
+     - critical
+     - 70
+     - Any success on the honeypot
+   * - MLS011
+     - Successful Telnet login (``protocol:telnet AND action:successful``)
+     - critical
+     - 60
+     - Deprecated protocol, IoT-botnet signal
    * - MLS012
      - Nmap scan (``protocol:http AND nmap``)
      - low

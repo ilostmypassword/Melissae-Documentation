@@ -96,6 +96,8 @@ Log Push Sequence
    - Agents: open **TCP 8444** (health endpoint) to the manager only. Honeypot ports (22, 21, 23, 1883, 502, 80/443) should be open to the internet.
    - MongoDB (:27017) and the Flask API (:5000) are bound to ``127.0.0.1`` and never exposed externally.
 
+.. _scheduled-jobs:
+
 Scheduled Jobs
 --------------
 

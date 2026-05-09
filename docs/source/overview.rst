@@ -30,37 +30,23 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
    :widths: 30 70
    :header-rows: 0
 
-   * - **Agent Health**
-     - Real-time status of all agents: module states, buffer occupancy, and last push time.
-   * - **Auto-Refresh**
-     - Dashboard and agents pages refresh every 30s / 15s with live indicators.
-   * - **Statistical Analysis**
-     - Interactive charts: multi-day timelines, hourly activity, protocol doughnut, agent bar charts, day×hour heatmap.
-   * - **Trend Detection**
-     - Stat cards display percentage change vs the previous 24h with directional arrows.
-   * - **Top Credentials**
-     - Most attempted usernames across SSH, FTP, and Telnet.
-   * - **Log Search (MQL)**
-     - Melissae Query Language with logical operators, sortable columns, pagination, and per-agent filtering.
-   * - **Log Export**
-     - Export logs as JSON, filtered by time range, service, IP, or agent.
+   * - **Real-time Overview**
+     - Auto-refreshing stat cards, charts and topology with trend indicators vs the previous 24h.
+   * - **Agent Fleet Monitoring**
+     - Per-agent health, module states, buffer occupancy and last push time.
    * - **Rule-Based Alerting**
-     - Declarative YAML rule engine (12 built-in rules: brute-force, CVE exploitation, ICS writes, recon scans, …). Each rule contributes its score to the per-IP 0–100 verdict.
-   * - **Alerts Page**
-     - Dedicated view with grouped/flat modes, severity & status filters and bulk actions (acknowledge, resolve).
-   * - **Agent Topology**
-     - Interactive manager ↔ agents ↔ modules canvas with drag, zoom and persisted layout.
-   * - **Activity & Attacker Stats**
-     - Dedicated statistics pages for traffic patterns and per-attacker breakdowns.
+     - Declarative YAML rule engine (12 built-in rules) feeding a dedicated Alerts page with grouping, severity/status filters and bulk actions.
+   * - **Threat Intelligence**
+     - Per-IP 0–100 verdicts, killchain timeline grouped by protocol and STIX 2.1 export.
    * - **GeoIP Attack Map**
-     - Interactive world map showing attack origins; markers colored by verdict and sized by score.
-   * - **GeoIP Enrichment**
-     - Automatic geolocation via ip-api.com batch API, cached in MongoDB, with country flags in the UI.
-   * - **STIX 2.1 Export**
-     - Export IOCs as STIX 2.1 indicators directly from the Threat Intelligence page.
-   * - **Killchain View**
-     - Click any IP to open a full attack timeline grouped by protocol.
+     - Interactive world map of attack origins with country breakdown, automatically adapting to private vs public IP mixes.
+   * - **Log Search (MQL)**
+     - Melissae Query Language with logical operators, sortable / paginated tables and JSON export.
+   * - **Activity & Attacker Statistics**
+     - Dedicated pages for traffic patterns and per-attacker breakdowns (top IPs, credentials, user-agents).
    * - **Automated Hygiene**
      - Scheduled purge removes benign IoCs unseen for 1h and their associated logs.
+
+See :doc:`dashboard` for the full per-page breakdown.
 
 
