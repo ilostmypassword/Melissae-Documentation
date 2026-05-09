@@ -1,7 +1,7 @@
 Overview
 ========
 
-Melissae is a distributed, modular honeypot framework built to emulate real-world network services. It uses a **manager/agent architecture** secured by **mTLS (mutual TLS)** to deploy honeypot sensors across multiple machines, while centralizing analysis, threat scoring, and visualization on a single manager node.
+Melissae is a distributed, modular honeypot framework built to emulate real-world network services. It uses a **manager/agent architecture** secured by **mTLS (mutual TLS)** to deploy honeypot sensors across multiple machines, while centralizing analysis, rule-based alerting, and visualization on a single manager node.
 
 Each service module runs in its own container, enabling flexible deployment and isolated execution. Agents parse logs locally and push normalized JSON to the manager over encrypted channels. The manager stores data in MongoDB, runs a **rule-based alerting engine** that evaluates declarative YAML detection rules against ingested logs, and serves a React dashboard.
 

@@ -116,9 +116,9 @@ Threat Intelligence
 
 |
 
-The Threat Intelligence page lists all scored IPs with verdict tags, scores, and confidence levels. Each row offers:
+The Threat Intelligence page lists all scored IPs with verdict tags and accumulated rule scores. Each row offers:
 
-- **Details panel** — Modal showing IP, verdict, score/100, confidence, timestamps, and rule reasons.
+- **Details panel** — Modal showing IP, verdict, score/100, timestamps, and the list of rules that matched.
 - **Killchain timeline** — Events grouped by protocol with start/end timestamps, ordered from oldest to newest.
 - **STIX 2.1 Export** — Download a STIX 2.1 bundle (one indicator per IP) for selected or all threats.
 

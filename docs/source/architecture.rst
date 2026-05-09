@@ -10,7 +10,7 @@ Manager / Agent Model
 
 Melissae uses a distributed **manager/agent** architecture:
 
-- **Manager**: Centralizes MongoDB, the Flask API, the dashboard, threat scoring, and agent monitoring. Does not run honeypots.
+- **Manager**: Centralizes MongoDB, the Flask API, the dashboard, the rule-based alerting engine, and agent monitoring. Does not run honeypots.
 - **Agents**: Deploy honeypot modules, parse raw logs locally into normalized JSON, and push data to the manager. Expose a health endpoint for the manager to poll.
 
 .. image:: manager-agent-model.png
