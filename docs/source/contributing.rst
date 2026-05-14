@@ -41,7 +41,7 @@ Roadmap
 - Automated PDF/HTML reports
 - Behavioral clustering (attack pattern grouping)
 - Adaptive deception (dynamic honeypot responses)
-- Rules UI to tune thresholds without redeploying (engine landed in v2.2, UI still pending)
+- Rules UI to tune thresholds without redeploying (engine landed in v2.5, UI still pending)
 
 Credits
 -------

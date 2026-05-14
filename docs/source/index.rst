@@ -3,7 +3,7 @@ Welcome to Melissae's documentation !
 
 .. note::
 
-   You are reading the documentation for **Melissae v2.2** (current stable release).
+   You are reading the documentation for **Melissae v2.5** (current stable release).
 
 **Melissae** is a distributed, modular honeypot framework built to emulate real-world network services. It uses a manager/agent architecture secured by mTLS to deploy honeypot sensors across multiple machines while centralizing analysis, rule-based alerting, and visualization on a single manager.
 

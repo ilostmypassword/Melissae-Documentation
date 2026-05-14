@@ -143,7 +143,7 @@ Alerts
 
 |
 
-The ``/alerts`` page is the primary surface for the **rule-based alerting engine** introduced in v2.2.
+The ``/alerts`` page is the primary surface for the **rule-based alerting engine** introduced in v2.5.
 
 - **Two view modes** — *Grouped* (one row per ``rule_id`` + IP, with last seen and hit count) or *Flat* (one row per individual alert).
 - **Filters** — Status (``new`` / ``acknowledged`` / ``resolved`` / *All*) and severity (``critical`` / ``high`` / ``medium`` / ``low``).

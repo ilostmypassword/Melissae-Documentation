@@ -80,7 +80,7 @@ Each rule is a YAML file under ``rules/`` (one file per rule, named ``MLSxxx.yml
 Built-in Rules
 --------------
 
-Twelve rules ship with v2.2, covering the signals previously hard-coded in the scoring engine:
+Twelve rules ship with v2.5, covering the signals previously hard-coded in the scoring engine:
 
 .. list-table::
    :header-rows: 1
@@ -92,10 +92,10 @@ Twelve rules ship with v2.2, covering the signals previously hard-coded in the s
      - Score
      - Notes
    * - MLS001
-     - CVE exploitation attempt (``cve:CVE``)
+     - Telnet CVE-2026-24061 auth-bypass (``cve:CVE-2026-24061``)
      - critical
-     - 70
-     - Any hit on a CVE-tagged module
+     - 85
+     - Targeted exploitation of the Telnet auth-bypass honeypot
    * - MLS002
      - FTP brute-force (``protocol:ftp AND action:"Login failed"``)
      - high
@@ -191,7 +191,7 @@ Examples
    protocol:ssh AND action:Failed
    protocol:ftp AND action:"Login failed"
    protocol:modbus AND action:write
-   cve:CVE
+   cve:CVE-2026-24061
    protocol:http AND nmap
    ip:192.168.1.10 AND NOT action:successful
 
