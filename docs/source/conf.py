@@ -6,8 +6,8 @@ project = 'Melissae'
 copyright = '2025, h3ik0 & Cie.'
 author = 'h3ik0'
 
-release = '2.5'
-version = '2.5.0'
+release = '2.6'
+version = '2.6.0'
 
 # -- General configuration
 

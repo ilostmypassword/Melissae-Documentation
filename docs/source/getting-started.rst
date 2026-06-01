@@ -111,6 +111,12 @@ This brings up 3 containers:
      - 0.0.0.0:443, 0.0.0.0:8443
      - Nginx — serves dashboard (:443) and terminates mTLS ingestion (:8443)
 
+.. note::
+
+   A fourth optional container, ``melissae_inspektor`` (internal port ``8088``), is
+   added when the AI analyst is enabled via the ``inspektor`` command. See
+   `Enabling Inspektor (optional)`_ below.
+
 
 Agent Enrollment
 ----------------
@@ -299,3 +305,38 @@ Authenticate with the credentials set during ``install``. Your browser will show
 .. image:: overview-dashboard.png
    :alt: Dashboard after first deployment
    :align: center
+
+Enabling Inspektor (optional)
+-----------------------------
+
+**Inspektor** is the optional AI threat analyst. It is **disabled by default** and
+requires AWS Bedrock credentials with model access. Enable it at any time from the
+manager CLI:
+
+.. code-block:: text
+
+   manager [3 active] > inspektor
+
+The command prompts for your AWS credentials, region and Bedrock model id, saves
+them to the manager ``.env`` file (``chmod 600``) with the ``inspektor`` Docker
+Compose profile, then builds and starts the ``melissae_inspektor`` container:
+
+.. code-block:: text
+
+   [?] Enable Inspektor AI analyst? [y/N] y
+   AWS Access Key ID: ...
+   AWS Secret Access Key: ...
+   AWS Session Token (optional, press Enter to skip):
+   AWS Region [us-east-1]:
+   Bedrock Model ID [anthropic.claude-3-5-sonnet-20240620-v1:0]:
+
+Running ``inspektor`` again lets you reconfigure or disable it. Once enabled, the
+**Inspektor** page appears on the dashboard for chat and on-demand threat
+briefings. See :doc:`inspektor` for the full reference.
+
+.. note::
+
+   The Inspektor service listens on port ``8088`` on the internal Docker network
+   only and is reached exclusively through the manager API proxy — it is never
+   exposed externally.
+

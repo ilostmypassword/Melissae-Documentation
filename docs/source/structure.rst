@@ -23,6 +23,13 @@ Project Structure
    │   │   ├── threatIntel.py            # Verdict aggregator (runs the rule engine)
    │   │   ├── health_poller.py          # Agent health polling daemon
    │   │   └── purgeLogs.py              # Log/IoC cleanup
+   │   ├── inspektor/                    # Optional AI threat analyst (AWS Bedrock + LangChain)
+   │   │   ├── inspektor.py              # On-demand HTTP service (report + chat)
+   │   │   ├── tools.py                  # Read-only MongoDB tools + skill loader
+   │   │   ├── prompts/                  # System prompt (framework context + skill index)
+   │   │   ├── skills/                   # On-demand skill procedures
+   │   │   ├── config.yml
+   │   │   └── Dockerfile
    │   └── pki/                          # PKI directory (certs gitignored)
    │       └── .gitignore
    ├── agent/                            # Agent

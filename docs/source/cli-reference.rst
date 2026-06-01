@@ -78,6 +78,9 @@ Manager CLI
    * -
      - ``events [count]``
      - Show recent events (default: 20)
+   * - **Inspektor AI Analyst**
+     - ``inspektor``
+     - Enable, reconfigure or disable the optional Inspektor AI analyst (AWS Bedrock credentials). See :doc:`inspektor`.
    * - **Management**
      - ``install``
      - Install manager and initialize PKI

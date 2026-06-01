@@ -38,6 +38,8 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
      - Declarative YAML rule engine (12 built-in rules) feeding a dedicated Alerts page with grouping, severity/status filters and bulk actions.
    * - **Threat Intelligence**
      - Per-IP 0–100 verdicts, killchain timeline grouped by protocol and STIX 2.1 export.
+   * - **Inspektor AI Threat Analyst**
+     - Optional **Inspektor** agent (AWS Bedrock + LangChain) for on-demand chat and exportable threat briefings, grounded strictly in retrieved data.
    * - **GeoIP Attack Map**
      - Interactive world map of attack origins with country breakdown, automatically adapting to private vs public IP mixes.
    * - **Log Search (MQL)**
@@ -48,5 +50,13 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
      - Scheduled purge removes benign IoCs unseen for 1h and their associated logs.
 
 See :doc:`dashboard` for the full per-page breakdown.
+
+.. rubric:: Inspektor AI Threat Analyst
+
+An optional AI analyst, **Inspektor**, runs on the manager on demand. Built on AWS
+Bedrock and LangChain, it investigates the live honeypot data through read-only
+tools, answers questions in a built-in chat, and produces SOC-ready threat
+briefings exportable to PDF. It loads task-specific *skills* only when needed and
+answers strictly from retrieved data. See :doc:`inspektor`.
 
 
