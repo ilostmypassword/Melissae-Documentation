@@ -1,4 +1,4 @@
-Inspektor — AI Threat Analyst
+AI Threat Analyst (Inspektor)
 =============================
 
 **Inspektor** is the optional AI threat analyst embedded in the manager. It is a
