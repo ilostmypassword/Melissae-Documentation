@@ -4,7 +4,7 @@ Dashboard
 Overview Dashboard
 ------------------
 
-.. image:: overview-dashboard.png
+.. image:: dashboard-overview.png
    :alt: Overview Dashboard
    :align: center
 
@@ -22,13 +22,14 @@ The main view provides a comprehensive real-time overview:
 - **Agent Bar Chart** — Event volume per agent.
 - **Top Attackers List** — Top attacking IPs with country flags (via GeoIP enrichment).
 - **Top Credentials** — Top 10 attempted usernames across SSH/FTP/Telnet with hit counts.
+- **Inspektor Briefing Card** — Compact recap of the latest AI threat briefing (when Inspektor is enabled), anchored on the *Posture* line. Clicking the card opens the full Inspektor page.
 
 **Critical Events Section**: When security-critical events are detected (CVE exploits, successful logins on Telnet/SSH/FTP, Modbus write attempts), a highlighted alert section appears at the top of the dashboard with red-themed cards showing event counts.
 
 Agents Page
 -----------
 
-.. image:: overview-agents.png
+.. image:: agent-management.png
    :alt: Agents Management
    :align: center
 
@@ -45,13 +46,13 @@ The ``/agents`` page provides real-time visibility into the agent fleet (auto-re
 GeoIP Attack Map
 ----------------
 
-.. image:: explore-geo-map-1.png
+.. image:: geoip.png
    :alt: GeoIP Attack Map
    :align: center
 
 |
 
-.. image:: explore-geo-map-2.png
+.. image:: geoip2.png
    :alt: GeoIP Attack Map (country breakdown)
    :align: center
 
@@ -77,7 +78,7 @@ The detection is automatic — public IPs are geolocated and shown on the map, p
 Search Engine
 -------------
 
-.. image:: explore-search.png
+.. image:: search.png
    :alt: Search Engine
    :align: center
 
@@ -116,13 +117,13 @@ Search Engine
 Threat Intelligence
 -------------------
 
-.. image:: intelligence-threat-intelligence-1.png
+.. image:: threat-intel.png
    :alt: Threat Intelligence
    :align: center
 
 |
 
-.. image:: intelligence-threat-intelligence-2.png
+.. image:: threat-intel2.png
    :alt: Threat Intelligence (details)
    :align: center
 
@@ -137,7 +138,7 @@ The Threat Intelligence page lists all scored IPs with verdict tags and accumula
 Alerts
 ------
 
-.. image:: detection-alerts.png
+.. image:: rule-based-alerting.png
    :alt: Alerts page
    :align: center
 
@@ -150,6 +151,38 @@ The ``/alerts`` page is the primary surface for the **rule-based alerting engine
 - **Bulk actions** — Select multiple alerts and acknowledge or resolve them in a single request.
 - **Auto-refresh** — New alerts appear every 20 seconds.
 - **Drill-down** — Each alert links to the matching IP killchain and to the underlying logs.
+
+Inspektor (AI Analyst)
+----------------------
+
+.. image:: inspektor.png
+   :alt: Inspektor AI
+   :align: center
+
+|
+
+The ``/inspektor`` page is the conversational surface for the embedded AI threat
+analyst. It is only visible when Inspektor has been enabled from the manager CLI
+(see :doc:`inspektor`).
+
+- **Chat** — ask about attackers, alerts, kill-chains or the overall state of the
+  hive and get grounded, technical answers. The conversation is persisted in the
+  browser, so reloading the page keeps the full history.
+- **Thinking trace** — every assistant reply ships with a collapsible *Thinking*
+  panel listing each reasoning step, the tool that was called, its input
+  arguments and the (truncated) output Inspektor observed. Useful both for
+  building trust and for debugging prompts or skills.
+- **Generate report** — produces a full threat briefing over the whole honeypot
+  network. The briefing is surfaced in the chat, on the Overview dashboard
+  (compact recap card), and is **exportable to PDF** via the *Export PDF* button
+  attached to the briefing message.
+- **Background runs** — you can leave the page while Inspektor thinks; a browser
+  notification fires when the answer is ready and an unread badge appears on the
+  navigation entry.
+- **Status pill** — a small dot near the header turns amber and pulses while a
+  request is in flight, green when idle.
+
+See :doc:`inspektor` for the architecture, skills, tools and enablement steps.
 
 Agent Topology
 --------------
@@ -164,19 +197,25 @@ Embedded in the main Overview Dashboard, an interactive canvas renders the live 
 Activity & Attacker Statistics
 ------------------------------
 
-.. image:: statistics-traffic-1.png
+.. image:: stats-charts.png
    :alt: Traffic statistics
    :align: center
 
 |
 
-.. image:: statistics-traffic-2.png
+.. image:: stats-charts2.png
    :alt: Traffic statistics (details)
    :align: center
 
 |
 
-.. image:: statistics-threats-1.png
+.. image:: stats-charts3.png
+   :alt: Attacker statistics
+   :align: center
+
+|
+
+.. image:: stats-charts4.png
    :alt: Attacker statistics
    :align: center
 
