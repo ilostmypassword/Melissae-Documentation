@@ -84,9 +84,10 @@ Tools
 -----
 
 Inspektor only has **read-only** access to MongoDB. Its tools mirror the same data
-the dashboard consumes: global statistics, threat lists and per-IP details,
-killchain timelines, recent alerts, log search, and agent health — plus the
-``get_skill`` loader that fetches a skill procedure on demand.
+the dashboard consumes: global statistics, a raw-log overview (the ground-truth
+superset of all observed sources, including those not yet scored), threat lists
+and per-IP details, killchain timelines, recent alerts, log search, and agent
+health — plus the ``get_skill`` loader that fetches a skill procedure on demand.
 
 .. _enabling-inspektor:
 
@@ -158,6 +159,9 @@ Once enabled, Inspektor is available from the **Inspektor** page of the dashboar
 
 - **Chat** — ask about attackers, alerts, kill-chains or the overall network state
   and get grounded, technical answers. Inspektor runs only when you ask; you can
-  leave the page while it thinks and you will be notified when it answers.
+  leave the page while it thinks and you will be notified when it answers. Every
+  reply ships with a collapsible **Thinking** panel that lists each reasoning
+  step, the tool that was called, its input arguments and the (truncated) output
+  Inspektor observed, so its conclusions remain fully auditable.
 - **Generate report** — produce a full threat briefing over the whole honeypot
   network, surfaced on the dashboard home and **exportable to PDF**.

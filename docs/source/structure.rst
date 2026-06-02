@@ -22,7 +22,7 @@ Project Structure
    │   │   ├── mql.py                    # Melissae Query Language parser
    │   │   ├── threatIntel.py            # Verdict aggregator (runs the rule engine)
    │   │   ├── health_poller.py          # Agent health polling daemon
-   │   │   └── purgeLogs.py              # Log/IoC cleanup
+   │   │   └── purgeLogs.py              # Non-destructive log/threat cleanup (retention-based)
    │   ├── inspektor/                    # Optional AI threat analyst (AWS Bedrock + LangChain)
    │   │   ├── inspektor.py              # On-demand HTTP service (report + chat)
    │   │   ├── tools.py                  # Read-only MongoDB tools + skill loader

@@ -112,10 +112,10 @@ On the **manager** (added during ``install``):
      - Purpose
    * - Every minute
      - ``scripts/threatIntel.py``
-     - Runs the rule engine and recalculates threat verdicts
+     - Runs the rule engine, recalculates threat verdicts and adds passive entries for IPs seen in the logs but never alerted
    * - Every minute
      - ``scripts/health_poller.py``
      - Polls agent health endpoints
    * - Every 3 hours
      - ``scripts/purgeLogs.py``
-     - Removes stale benign IoCs and logs
+     - Recycles idle benign threat documents (logs untouched) and trims raw logs older than the configured retention window (30 days by default)

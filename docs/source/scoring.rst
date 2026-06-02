@@ -1,7 +1,7 @@
 Scoring & Alerting
 ==================
 
-Starting with **v2.2**, Melissae replaces the continuous weighted-signal scoring engine with a **rule-based alerting engine**. Detection logic now lives in declarative YAML rules under ``rules/``, and each observed IP's verdict is computed by summing, for every matching rule, ``rule.score × number of alerts emitted by that rule`` over a rolling 90-day window, capped at 100.
+Starting with **v2.2**, Melissae replaces the continuous weighted-signal scoring engine with a **rule-based alerting engine**. Detection logic lives in declarative YAML rules under ``rules/``, and each observed IP's verdict is computed by summing, for every matching rule, a **base severity plus a logarithmic boost on the number of alerts emitted by that rule** over a rolling 90-day window, capped at 100. The logarithmic growth keeps the *Suspicious* band reachable and prevents a single repeating low-severity rule from collapsing instantly into *Malicious*.
 
 Scale & Verdicts
 -----------------
@@ -17,7 +17,7 @@ Scores still use a **0–100 scale**. Verdict thresholds are unchanged:
      - Description
    * - 0–29
      - Benign
-     - Passive noise, single low-value connections
+     - Observed in the logs but never matched a rule, or matched only low-value signals (passive scans, single connections). Includes a dedicated ``passive: true`` flag on IPs that were seen but never triggered any detection.
    * - 30–69
      - Suspicious
      - Active scanning, failed auth, reconnaissance
@@ -80,7 +80,7 @@ Each rule is a YAML file under ``rules/`` (one file per rule, named ``MLSxxx.yml
 Built-in Rules
 --------------
 
-Twelve rules ship with v2.5, covering the signals previously hard-coded in the scoring engine:
+Twelve rules ship with v2.6, covering the signals previously hard-coded in the scoring engine:
 
 .. list-table::
    :header-rows: 1
@@ -160,14 +160,21 @@ How Scoring Works
 1. ``rule_engine.py`` loads every YAML file in ``rules/`` (configurable via ``MELISSAE_RULES_DIR``).
 2. For each enabled rule whose ``schedule`` is due, it pulls the logs of the last ``lookback`` window, runs the ``mql`` query against them and groups the matches by ``group_by``.
 3. Every group with at least ``threshold`` matches produces an **alert** in MongoDB (``alerts`` collection) carrying ``rule_id``, ``severity``, ``score``, ``ip``, time range and matching log references.
-4. ``threatIntel.py`` aggregates alerts (rolling 90-day window) per IP into the ``threats`` collection. The verdict score is
+4. ``threatIntel.py`` aggregates alerts (rolling 90-day window) per IP into the ``threats`` collection. Each matching rule contributes
 
    .. math::
 
-      \mathrm{score}(\mathrm{ip}) = \min\!\left(100,\; \sum_{r \in \text{matched rules}} r.\mathrm{score} \times r.\mathrm{count}\right)
+      \mathrm{contrib}(r) = r.\mathrm{score} + 5 \cdot \log_2(\max(1,\, r.\mathrm{count}))
+
+   and the final verdict score is
+
+   .. math::
+
+      \mathrm{score}(\mathrm{ip}) = \min\!\left(100,\; \sum_{r \in \text{matched rules}} \mathrm{contrib}(r)\right)
 
    where ``r.count`` is the number of alerts emitted by rule ``r`` for that IP in the window. The verdict label follows the table above.
-5. The dashboard consumes ``threats`` (Threat Intelligence, Map) and ``alerts`` (Alerts page) to drive its views.
+5. The same job also performs a **passive aggregation** over the ``logs`` collection: any IP observed in the logs that has not raised a single alert receives a ``threats`` document with score ``0``, verdict ``benign`` and ``passive: true``. This ensures the dashboard reflects every IP the hive has actually seen, not only the ones that fired a rule.
+6. The dashboard consumes ``threats`` (Threat Intelligence, Map) and ``alerts`` (Alerts page) to drive its views.
 
 This design makes detection logic **transparent and auditable**: every score increment is traceable to a specific rule, and operators can enable/disable, retune or extend rules without touching engine code.
 

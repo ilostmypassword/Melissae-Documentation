@@ -20,7 +20,7 @@ All agent-to-manager communications are authenticated with mutual TLS using an i
 
 .. rubric:: Modular Service Support
 
-Configure each agent to expose up to 6+ services simultaneously. Alongside standard honeypot modules, Melissae supports **CVE-specific modules** — purpose-built containers reproducing real vulnerabilities to detect targeted exploitation attempts. See :doc:`contributing` for guidance on writing new modules.
+Configure each agent to expose up to 7 services simultaneously (Web, SSH, FTP, Telnet, Modbus/ICS, MQTT, plus a CVE category). Alongside standard honeypot modules, Melissae supports **CVE-specific modules** — purpose-built containers reproducing real vulnerabilities to detect targeted exploitation attempts. See :doc:`contributing` for guidance on writing new modules.
 
 .. rubric:: Centralized Management Dashboard
 
@@ -47,7 +47,7 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
    * - **Activity & Attacker Statistics**
      - Dedicated pages for traffic patterns and per-attacker breakdowns (top IPs, credentials, user-agents).
    * - **Automated Hygiene**
-     - Scheduled purge removes benign IoCs unseen for 1h and their associated logs.
+     - Non-destructive scheduled purge: recycles idle benign threat documents (rebuilt automatically from the logs on the next run) and trims logs older than the retention window (30 days by default).
 
 See :doc:`dashboard` for the full per-page breakdown.
 
