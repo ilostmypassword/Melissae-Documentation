@@ -127,7 +127,7 @@ SSH
      - Image
      - Container Name
    * - SSH Server
-     - ubuntu:latest + openssh
+     - ubuntu:24.04 + openssh
      - melissae_ssh
 
 **Log format:**

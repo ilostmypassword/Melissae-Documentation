@@ -71,9 +71,11 @@ The installer performs the following steps:
 
    A dual-purpose (client + server) certificate is generated with SANs covering the FQDN/IP entered, the detected IP (when distinct), ``localhost``, and ``127.0.0.1``.
 
-4. **Dashboard credentials** — Prompts for a username (default: ``melissae``) and password, saved to ``dashboard/conf/htpasswd`` using bcrypt (``htpasswd -Bbc``).
+4. **Dashboard credentials** — Prompts for a username (default: ``melissae``) and password, saved to ``dashboard/conf/htpasswd`` using bcrypt (``htpasswd -Bic``, the password is read from stdin and never appears on the command line).
 
-5. **Cron jobs** — Three scheduled tasks are added to the system crontab (rule engine, health poller, log purge). See :ref:`Scheduled Jobs <scheduled-jobs>` in the Architecture page for the full schedule.
+5. **Inspektor (optional)** — Asks whether to enable the AI analyst. Answer ``N`` (default) to skip it; you can enable it later with the ``inspektor`` command. See `Enabling Inspektor (optional)`_ below.
+
+6. **Cron jobs** — Three scheduled tasks are added to the system crontab (rule engine, health poller, log purge). See :ref:`Scheduled Jobs <scheduled-jobs>` in the Architecture page for the full schedule.
 
 After installation, add your user to the Docker group and apply the changes immediately:
 
@@ -177,9 +179,7 @@ The agent installer performs the following steps:
 
 3. **Docker** — Installs Docker CE + Compose plugin if not already present.
 
-4. **Enrollment** — Sends ``POST /api/enroll`` with the one-time token to the manager (insecure TLS — CA not yet known). The manager responds with:
-
-   The JSON response contains the fields ``agent_id``, ``ca_crt``, ``agent_crt``, and ``agent_key`` (all base64-encoded where applicable). Certificates are saved in ``agent/certs/`` with key permissions set to 600.
+4. **Enrollment** — Sends ``POST /api/enroll`` with the one-time token to the manager (insecure TLS — CA not yet known). The JSON response contains the fields ``agent_id``, ``ca_crt``, ``agent_crt``, and ``agent_key`` (all base64-encoded where applicable). Certificates are saved in ``agent/certs/`` with key permissions set to 600. The agent status switches from ``pending`` to ``enrolled`` on the manager.
 
 5. **Configuration** — Generates ``daemon/config.yml`` with all paths and settings:
 
@@ -300,11 +300,38 @@ Authenticate with the credentials set during ``install``. Your browser will show
 
       manager [3 active] > agents
 
-   The agent should appear with status ``healthy`` within a minute of its first log push.
+   The agent goes through the following statuses:
 
-.. image:: overview-dashboard.png
+   - ``pending`` — the token was generated, the agent has not enrolled yet.
+   - ``enrolled`` — the agent completed ``/api/enroll``, but the manager has not polled it yet.
+   - ``healthy`` / ``degraded`` / ``unreachable`` — written by the health poller (``scripts/health_poller.py``, run every minute by cron), which queries ``GET https://<agent>:8444/health`` over mTLS. The status is **not** updated by log pushes.
+
+   The agent should therefore turn ``healthy`` within about a minute after the daemon is started. If it stays ``unreachable``, see :ref:`agent-unreachable`.
+
+.. image:: dashboard-overview.png
    :alt: Dashboard after first deployment
    :align: center
+
+.. _agent-unreachable:
+
+Troubleshooting an unreachable agent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Two network flows must be open:
+
+- **Agent → manager**: TCP ``8443`` (ingestion and enrollment).
+- **Manager → agent**: TCP ``8444`` (health polling), towards the agent's **public IP**.
+
+On cloud providers (AWS security group, Lightsail firewall, …), allow the manager's **public** IP on port ``8444`` of the agent, not its private IP.
+
+You can run the poller by hand on the manager to see the exact error:
+
+.. code-block:: bash
+
+   python3 scripts/health_poller.py
+
+- ``timed out`` — a firewall is dropping the traffic.
+- ``Connection refused`` — the network path is open but the agent daemon is stopped; start it with ``start`` on the agent.
 
 Enabling Inspektor (optional)
 -----------------------------
@@ -330,9 +357,9 @@ Compose profile, then builds and starts the ``melissae_inspektor`` container:
    AWS Region [us-east-1]:
    Bedrock Model ID [anthropic.claude-3-5-sonnet-20240620-v1:0]:
 
-Running ``inspektor`` again lets you reconfigure or disable it. Once enabled, the
-**Inspektor** page appears on the dashboard for chat and on-demand threat
-briefings. See :doc:`inspektor` for the full reference.
+Running ``inspektor`` again lets you reconfigure or disable it. Once configured, the
+**Inspektor** page offers chat and on-demand threat briefings (until then it shows
+a setup guide). See :doc:`inspektor` for the full reference.
 
 .. note::
 

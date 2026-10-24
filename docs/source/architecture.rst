@@ -93,7 +93,7 @@ Log Push Sequence
    **Firewall requirements:**
 
    - Manager: open **TCP 443** (dashboard HTTPS) and **TCP 8443** (mTLS ingestion + enrollment) to the agents and your browser.
-   - Agents: open **TCP 8444** (health endpoint) to the manager only. Honeypot ports (22, 21, 23, 1883, 502, 80/443) should be open to the internet.
+   - Agents: open **TCP 8444** (health endpoint) to the manager only. When the agent sits behind a cloud firewall (AWS security group, Lightsail, …), allow the manager's **public** IP, not its private one. Honeypot ports (22, 21, 23, 1883, 502, 80/443) should be open to the internet.
    - MongoDB (:27017) and the Flask API (:5000) are bound to ``127.0.0.1`` and never exposed externally.
 
 .. _scheduled-jobs:

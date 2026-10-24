@@ -22,7 +22,14 @@ The main view provides a comprehensive real-time overview:
 - **Agent Bar Chart** — Event volume per agent.
 - **Top Attackers List** — Top attacking IPs with country flags (via GeoIP enrichment).
 - **Top Credentials** — Top 10 attempted usernames across SSH/FTP/Telnet with hit counts.
-- **Inspektor Briefing Card** — Compact recap of the latest AI threat briefing (when Inspektor is enabled), anchored on the *Posture* line. Clicking the card opens the full Inspektor page.
+- **Inspektor Briefing Card** — Compact recap of the latest AI threat briefing, anchored on the *Posture* line. Clicking the card opens the full Inspektor page. The card is only shown when Inspektor is enabled **and** configured with AWS Bedrock credentials.
+- **Recent Alerts Card** — The latest active (``new``) alerts, aggregated exactly like the *Alerts* page: one row per rule and IP with a hit count, instead of one row per individual alert. Shows a "No active alerts" state when nothing is firing.
+
+**Navigation & UX**:
+
+- **Command Palette** — Press ``Ctrl+K`` (``⌘+K`` on macOS) anywhere to open it. It offers *Go to* entries for every page, *Quick search* shortcuts (SSH activity, HTTP activity, successful logins, CVE exploits) and a free-text *Search logs for …* entry. Use ``↑`` / ``↓`` to navigate, ``↵`` to open and ``Esc`` to close.
+- **View Transitions** — Page changes (sidebar and command palette) use the browser View Transitions API where supported, and fall back to a regular navigation otherwise.
+- **Animated Counters** — Stat card values count up when they change (disabled when the browser requests reduced motion).
 
 **Critical Events Section**: When security-critical events are detected (CVE exploits, successful logins on Telnet/SSH/FTP, Modbus write attempts), a highlighted alert section appears at the top of the dashboard with red-themed cards showing event counts.
 
@@ -37,7 +44,7 @@ Agents Page
 
 The ``/agents`` page provides real-time visibility into the agent fleet (auto-refreshes every 15s):
 
-- Status indicator (healthy / degraded / unreachable / pending) with color coding
+- Status indicator (healthy / degraded / unreachable / enrolled / pending) with color coding
 - Host address, last push time, last health check
 - Active modules per agent with running/stopped state, aggregate running/total count
 - Buffer pending count and uptime
@@ -162,8 +169,9 @@ Inspektor (AI Analyst)
 |
 
 The ``/inspektor`` page is the conversational surface for the embedded AI threat
-analyst. It is only visible when Inspektor has been enabled from the manager CLI
-(see :doc:`inspektor`).
+analyst. The sidebar entry is always visible. When Inspektor is not configured, the
+page shows a short setup guide (with a *Not configured* pill and a *Check again*
+button) instead of the chat; see :doc:`inspektor`.
 
 - **Chat** — ask about attackers, alerts, kill-chains or the overall state of the
   hive and get grounded, technical answers. The conversation is persisted in the
@@ -174,7 +182,7 @@ analyst. It is only visible when Inspektor has been enabled from the manager CLI
   building trust and for debugging prompts or skills.
 - **Generate report** — produces a full threat briefing over the whole honeypot
   network. The briefing is surfaced in the chat, on the Overview dashboard
-  (compact recap card), and is **exportable to PDF** via the *Export PDF* button
+  (compact recap card, once Inspektor is configured), and is **exportable to PDF** via the *Export PDF* button
   attached to the briefing message.
 - **Background runs** — you can leave the page while Inspektor thinks; a browser
   notification fires when the answer is ready and an unread badge appears on the
@@ -203,7 +211,7 @@ Activity & Attacker Statistics
 
 |
 
-.. image:: stats-charts2.png
+.. image:: stats-charts-2.png
    :alt: Traffic statistics (details)
    :align: center
 

@@ -80,7 +80,7 @@ Each rule is a YAML file under ``rules/`` (one file per rule, named ``MLSxxx.yml
 Built-in Rules
 --------------
 
-Twelve rules ship with v2.6, covering the signals previously hard-coded in the scoring engine:
+Fourteen rules ship with v2.7, covering the signals previously hard-coded in the scoring engine:
 
 .. list-table::
    :header-rows: 1
@@ -151,6 +151,16 @@ Twelve rules ship with v2.6, covering the signals previously hard-coded in the s
      - low
      - 5
      - User-agent based recon detection
+   * - MLS013
+     - Telnet brute-force (``protocol:telnet AND action:"Login failed"``)
+     - high
+     - 35
+     - ≥5 failures / 5 min, IoT-botnet signal (MITRE T1110)
+   * - MLS014
+     - MQTT publish or wildcard subscription (``protocol:mqtt AND (action:Publish OR action:#)``)
+     - high
+     - 40
+     - Any occurrence / 1 min, message tampering or topic enumeration (MITRE T1565, T1046)
 
 The complete set of rules — including exact MQL queries, thresholds and scores — is the source of truth in the ``rules/`` directory and is also exposed by the API at ``GET /api/rules``.
 

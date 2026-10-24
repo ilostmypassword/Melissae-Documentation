@@ -53,6 +53,6 @@ Project Structure
    │   ├── telnet/                       # Telnet honeypot
    │   └── cve/                          # CVE-specific modules
    │       └── CVE-2026-24061/
-   ├── rules/                            # YAML detection rules (MLS001 … MLS012)
+   ├── rules/                            # YAML detection rules (MLS001 … MLS014)
    │   └── MLS0xx.yml
    └── README.md

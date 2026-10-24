@@ -12,7 +12,7 @@ Roadmap
 
 - Modbus Industrial Honeypot Module — Complete TCP honeypot with PLC emulation
 - React Dashboard Redesign — Modern SPA with React 19, Vite, Tailwind CSS
-- Rule-Based Alerting Engine — Declarative YAML rules (MLS001 … MLS012) with MQL queries, severities, schedules and accumulated 0–100 verdicts
+- Rule-Based Alerting Engine — Declarative YAML rules (MLS001 … MLS014) with MQL queries, severities, schedules and accumulated 0–100 verdicts
 - Alerts Page — Grouped/flat views, severity & status filters, bulk acknowledge/resolve
 - Agent Topology — Interactive manager ↔ agents ↔ modules canvas with persisted layout
 - Activity & Attacker Statistics Pages
@@ -31,13 +31,14 @@ Roadmap
 - Dashboard Enhancements — Auto-refresh, date range filter, trend arrows, heatmap, multi-day timeline, top credentials, sortable/paginated tables
 - GeoIP Enrichment API — Cached batch IP geolocation with country flags in dashboard
 - Security Hardening — Path traversal protection, rate limiting, input validation, SHA-256 hashing, SSRF mitigation, error message sanitization
+- v2.7 Release — Rules MLS013 (Telnet brute-force) and MLS014 (MQTT publish / wildcard subscription), four new Inspektor skills, Inspektor setup guide and Briefing card hidden until configured, aggregated Recent alerts on the dashboard home, command palette (Ctrl/⌘+K), view transitions and animated stat counters, upgrade to LangChain 0.3, additional security hardening pass
 
 **Planned:**
 
 - Improve MQTT module
 - Develop new CVE modules
 - Develop new modules (SNMP, etc.)
-- MITRE ATT&CK mapping for threat events
+- MITRE ATT&CK mapping for threat events (rules already carry ``mitre`` technique IDs and Inspektor ships a ``mitre-mapping`` skill; a dedicated dashboard view is still pending)
 - Automated PDF/HTML reports
 - Behavioral clustering (attack pattern grouping)
 - Adaptive deception (dynamic honeypot responses)

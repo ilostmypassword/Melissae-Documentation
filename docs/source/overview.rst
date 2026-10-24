@@ -35,7 +35,7 @@ Monitor and manage your honeypot fleet through a modern React dashboard:
    * - **Agent Fleet Monitoring**
      - Per-agent health, module states, buffer occupancy and last push time.
    * - **Rule-Based Alerting**
-     - Declarative YAML rule engine (12 built-in rules) feeding a dedicated Alerts page with grouping, severity/status filters and bulk actions.
+     - Declarative YAML rule engine (14 built-in rules) feeding a dedicated Alerts page with grouping, severity/status filters and bulk actions.
    * - **Threat Intelligence**
      - Per-IP 0–100 verdicts, killchain timeline grouped by protocol and STIX 2.1 export.
    * - **Inspektor AI Threat Analyst**
